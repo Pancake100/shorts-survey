@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = "kansei_video_survey_v5_session";
+  const STORAGE_KEY = "kansei_video_survey_v6_session";
   const SCALE_VALUES = [-3, -2, -1, 0, 1, 2, 3];
 
   const $ = (id) => document.getElementById(id);
@@ -183,16 +183,16 @@
       const item = document.createElement("section");
       item.className = "scale-item";
       item.innerHTML = `
-        <div class="scale-pair-title scale-pair-title-directed">
-          <span class="scale-left">← ${escapeHtml(pair.negative)}</span>
-          <span class="scale-right">${escapeHtml(pair.positive)} →</span>
+        <div class="scale-pair-title" aria-hidden="true">
+          <span class="pair-left">← ${escapeHtml(pair.negative)}</span>
+          <span class="pair-right">${escapeHtml(pair.positive)} →</span>
         </div>
         <p class="scale-definition">${escapeHtml(pair.definition || "")}</p>
         <div class="radio-row kansei-radio-row" role="radiogroup" aria-label="${escapeHtml(pair.negative)} to ${escapeHtml(pair.positive)}">
           ${SCALE_VALUES.map((value, index) => `
-            <label title="Position ${index + 1} of 7">
+            <label title="Position ${index + 1} of 7, from ${escapeHtml(pair.negative)} to ${escapeHtml(pair.positive)}">
               <input type="radio" name="kansei_${escapeHtml(pair.id)}" value="${value}" ${response.kansei_ratings[pair.id] === value ? "checked" : ""}>
-              <span class="visually-hidden">Position ${index + 1} of 7</span>
+              <span class="visually-hidden">Position ${index + 1} of 7, from ${escapeHtml(pair.negative)} to ${escapeHtml(pair.positive)}</span>
             </label>
           `).join("")}
         </div>
@@ -315,10 +315,10 @@
     const kanseiDone = response.kansei_completed;
     const questionsDone = response.questions_completed;
 
-    $("kanseiStatus").textContent = kanseiDone ? "●" : "○";
-    $("questionsStatus").textContent = questionsDone ? "●" : "○";
-    $("kanseiStatus").classList.toggle("done", kanseiDone);
-    $("questionsStatus").classList.toggle("done", questionsDone);
+    $("kanseiIcon").textContent = kanseiDone ? "♥" : "♡";
+    $("openKanseiBtn").classList.toggle("is-complete", kanseiDone);
+    $("questionsIcon").textContent = "?";
+    $("openQuestionsBtn").classList.toggle("is-complete", questionsDone);
 
     if (kanseiDone && questionsDone) {
       $("completionHint").textContent = state.currentIndex === state.videos.length - 1 ? "Completed. Use ↓ or Settings to finish." : "Completed. Use ↓ for next video.";

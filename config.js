@@ -11,7 +11,7 @@
 
 const CONFIG = {
   experimentTitle: "Short-Form Video Kansei Survey",
-  experimentVersion: "2.1-prototype",
+  experimentVersion: "2.3-prototype",
 
   instructions: `
     You will watch a set of short-form videos and rate your impression of each video.

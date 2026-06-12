@@ -1,27 +1,22 @@
-# Kansei Short-Form Video Survey App v5
+# Kansei Short-Form Video Survey App v6
 
 This is a frontend-only prototype for a mobile-first Kansei evaluation experiment using local short-form videos.
 
-## Main changes in v5
+## Main changes in v6
 
-- The survey screen follows a single mobile video-screen design.
+- The survey screen now follows a single mobile video-screen design.
 - The video occupies the main screen area.
 - The progress indicator appears at the top-left as `Video 1/10`.
 - Video titles are not displayed to participants to avoid bias.
-- A right-side vertical overlay menu provides:
-  - Kansei rating
-  - Additional questions
-  - Previous video
-  - Next video
-  - Settings
-- Kansei adjective pairs now use a mobile-friendly directed layout without visible numbers:
-
-```text
-← Calm                         Energetic →
-○   ○   ○   ○   ○   ○   ○
-```
-
-- The visible arrows clarify scale direction without suggesting positive/negative value judgments.
+- The right-side vertical overlay menu now uses icon-only controls:
+  - `♡` for incomplete Kansei rating
+  - green `♥` for completed Kansei rating
+  - `?` for incomplete additional questions
+  - green bold `?` for completed additional questions
+  - `↑` for previous video
+  - `↓` for next video
+  - `⚙` for settings
+- The icon guide appears on the participant setup screen, not on the video screen.
 - The settings modal contains:
   - Participant ID
   - Group
@@ -51,7 +46,7 @@ This is a frontend-only prototype for a mobile-first Kansei evaluation experimen
 ## File structure
 
 ```text
-kansei_video_survey_v5/
+kansei_video_survey_v6/
   index.html
   style.css
   config.js
@@ -62,6 +57,21 @@ kansei_video_survey_v5/
     group-b/
     group-c/
 ```
+
+
+## Video screen icon behavior
+
+The main video screen intentionally hides button text to provide a more mobile short-form video experience. The visible icons are:
+
+```text
+♡ / ♥  Kansei rating: white outline before completion, green filled heart after completion
+?      Additional questions: white before completion, green and bold after completion
+↑      Previous video
+↓      Next video / review when the current video is complete
+⚙      Settings, finish/export, or restart
+```
+
+The buttons still include accessible labels in the HTML through `aria-label` attributes.
 
 ## How to add videos
 
@@ -102,12 +112,10 @@ Example:
 }
 ```
 
-The participant does not see numbers. Internally, the app stores each answer as an integer for analysis:
+The app stores each answer as an integer:
 
 ```text
-leftmost = -3
-center   =  0
-rightmost = +3
+-3 -2 -1 0 +1 +2 +3
 ```
 
 ## How to edit additional questions

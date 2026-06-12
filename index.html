@@ -18,11 +18,21 @@
           <summary>Kansei adjective explanation</summary>
           <p id="kanseiExplanation"></p>
           <div class="example-scale" aria-label="Example Kansei scale">
-            <span>Boring</span>
-            <span class="dots">○ ○ ○ ● ○ ○ ○</span>
-            <span>Interesting</span>
+            <div class="example-pair-row"><span>← Boring</span><span>Interesting →</span></div>
+            <div class="dots">○ ○ ○ ● ○ ○ ○</div>
           </div>
         </details>
+
+        <section class="info-box icon-guide" aria-label="Video screen icon guide">
+          <h2>Video screen buttons</h2>
+          <div class="icon-guide-grid">
+            <div><span class="guide-icon">♡ / <strong>♥</strong></span><span>Kansei rating. The heart becomes green after completion.</span></div>
+            <div><span class="guide-icon">?</span><span>Additional questions. The question mark becomes green and bold after completion.</span></div>
+            <div><span class="guide-icon">↑</span><span>Previous video.</span></div>
+            <div><span class="guide-icon">↓</span><span>Next video. Available after both parts are completed.</span></div>
+            <div><span class="guide-icon">⚙</span><span>Settings, finish/export, or restart.</span></div>
+          </div>
+        </section>
 
         <form id="setupForm" class="setup-form">
           <label>
@@ -61,31 +71,24 @@
           <div class="progress-pill" id="progressText">Video 1/10</div>
 
           <div class="side-controls" aria-label="Survey controls">
-            <button id="openKanseiBtn" class="round-action" type="button" aria-label="Open Kansei rating">
-              <span class="action-icon">♡</span>
-              <span class="action-label">Kansei</span>
-              <span id="kanseiStatus" class="status-dot" aria-hidden="true">○</span>
+            <button id="openKanseiBtn" class="round-action survey-icon-btn" type="button" aria-label="Open Kansei rating">
+              <span id="kanseiIcon" class="action-icon" aria-hidden="true">♡</span>
             </button>
 
-            <button id="openQuestionsBtn" class="round-action" type="button" aria-label="Open additional questions">
-              <span class="action-icon">?</span>
-              <span class="action-label">Questions</span>
-              <span id="questionsStatus" class="status-dot" aria-hidden="true">○</span>
+            <button id="openQuestionsBtn" class="round-action survey-icon-btn" type="button" aria-label="Open additional questions">
+              <span id="questionsIcon" class="action-icon" aria-hidden="true">?</span>
             </button>
 
-            <button id="prevVideoBtn" class="round-action" type="button" aria-label="Go to previous video">
-              <span class="action-icon">↑</span>
-              <span class="action-label">Previous</span>
+            <button id="prevVideoBtn" class="round-action survey-icon-btn" type="button" aria-label="Go to previous video">
+              <span class="action-icon" aria-hidden="true">↑</span>
             </button>
 
-            <button id="nextVideoBtn" class="round-action" type="button" aria-label="Go to next video">
-              <span class="action-icon">↓</span>
-              <span class="action-label">Next</span>
+            <button id="nextVideoBtn" class="round-action survey-icon-btn" type="button" aria-label="Go to next video">
+              <span class="action-icon" aria-hidden="true">↓</span>
             </button>
 
-            <button id="settingsBtn" class="round-action" type="button" aria-label="Open settings">
-              <span class="action-icon">⚙</span>
-              <span class="action-label">Settings</span>
+            <button id="settingsBtn" class="round-action survey-icon-btn" type="button" aria-label="Open settings">
+              <span class="action-icon" aria-hidden="true">⚙</span>
             </button>
           </div>
 
@@ -116,7 +119,7 @@
     <div class="sheet-header">
       <div>
         <h2 id="kanseiModalTitle">Kansei rating</h2>
-        <p class="small-muted">Rate your impression using the 7-point scale.</p>
+        <p class="small-muted">For each adjective pair, choose the point that best matches your impression.</p>
       </div>
       <button class="icon-btn close-modal" data-close="kanseiModal" type="button">×</button>
     </div>
