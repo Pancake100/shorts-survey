@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Short-Form Video Emotion Rating Survey</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-container">
+    <section id="intro-screen" class="screen active">
+      <h1 id="experiment-title">Short-Form Video Emotion Rating Survey</h1>
+
+      <p>
+        In this experiment, you will watch a set of short videos and rate each video using several emotion scales.
+        Each scale ranges from a negative or lower-intensity emotion on the left to a positive or higher-intensity emotion on the right.
+      </p>
+
+      <p>
+        Please watch each video carefully, then select one value for every emotion pair.
+        You may go back and change your answers before exporting your result file.
+      </p>
+
+      <div class="form-block">
+        <label for="group-select">Assigned group</label>
+        <select id="group-select"></select>
+      </div>
+
+      <div class="form-block">
+        <label for="participant-email">Email address (optional)</label>
+        <input id="participant-email" type="email" placeholder="optional@example.com" />
+      </div>
+
+      <button id="start-button">Start Survey</button>
+    </section>
+
+    <section id="survey-screen" class="screen">
+      <div class="survey-header">
+        <div>
+          <h2 id="video-progress">Video 1 / 10</h2>
+          <p id="video-id-label"></p>
+        </div>
+        <button id="restart-button" class="secondary">Restart</button>
+      </div>
+
+      <div class="survey-layout">
+        <div class="video-panel">
+          <div id="video-container" class="video-container"></div>
+        </div>
+
+        <div class="rating-panel">
+          <h3>Emotion ratings</h3>
+          <p class="scale-help">Left = -2, middle = 0, right = +2</p>
+          <div id="ratings-container"></div>
+        </div>
+      </div>
+
+      <div class="navigation-bar">
+        <button id="previous-button" class="secondary">Previous</button>
+        <button id="next-button">Next</button>
+      </div>
+    </section>
+
+    <section id="finish-screen" class="screen">
+      <h2>Survey Complete</h2>
+      <p>
+        Thank you. Please export your result as a JSON file and send it to the researcher or instructor.
+      </p>
+
+      <div class="export-actions">
+        <button id="download-json-button">Download JSON</button>
+        <button id="download-csv-button" class="secondary">Download CSV</button>
+      </div>
+
+      <h3>Preview</h3>
+      <pre id="result-preview"></pre>
+
+      <button id="back-to-survey-button" class="secondary">Back to Survey</button>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

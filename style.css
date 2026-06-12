@@ -1,0 +1,176 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f6f6f6;
+  color: #222;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.screen {
+  display: none;
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.screen.active {
+  display: block;
+}
+
+h1, h2, h3 {
+  margin-top: 0;
+}
+
+.form-block {
+  margin: 18px 0;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+input, select {
+  width: 100%;
+  max-width: 420px;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 4px;
+  background: #222;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button.secondary {
+  background: #e0e0e0;
+  color: #222;
+}
+
+button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.survey-header,
+.navigation-bar,
+.export-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.survey-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.video-container {
+  width: 100%;
+  min-height: 500px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-container iframe {
+  width: 100%;
+  min-height: 500px;
+  border: none;
+}
+
+.rating-panel {
+  border-left: 1px solid #eee;
+  padding-left: 20px;
+}
+
+.scale-help {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.rating-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 120px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.rating-word-left {
+  text-align: right;
+}
+
+.rating-word-right {
+  text-align: left;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.radio-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.radio-option input {
+  width: auto;
+}
+
+#result-preview {
+  white-space: pre-wrap;
+  background: #f4f4f4;
+  padding: 16px;
+  border-radius: 6px;
+  max-height: 380px;
+  overflow: auto;
+}
+
+@media (max-width: 850px) {
+  .survey-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .rating-panel {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .rating-row {
+    grid-template-columns: 90px 1fr 90px;
+  }
+}
