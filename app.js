@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = "kansei_video_survey_v2_session";
+  const STORAGE_KEY = "kansei_video_survey_v3_session";
   const SCALE_VALUES = [-3, -2, -1, 0, 1, 2, 3];
 
   const $ = (id) => document.getElementById(id);
@@ -26,7 +26,6 @@
     $("experimentTitle").textContent = CONFIG.experimentTitle;
     $("instructions").textContent = CONFIG.instructions.trim();
     $("kanseiExplanation").textContent = CONFIG.kanseiExplanation.trim();
-    $("surveyTitle").textContent = CONFIG.experimentTitle;
   }
 
   function populateGroups() {
@@ -43,14 +42,16 @@
   function bindEvents() {
     $("setupForm").addEventListener("submit", onStartSurvey);
     $("resumeBtn").addEventListener("click", resumeSavedSession);
-    $("backToSetupBtn").addEventListener("click", () => showScreen("setup"));
     $("prevVideoBtn").addEventListener("click", prevVideo);
     $("nextVideoBtn").addEventListener("click", nextVideo);
-    $("finishBtn").addEventListener("click", showReview);
     $("backToSurveyBtn").addEventListener("click", () => showScreen("survey"));
     $("exportJsonBtn").addEventListener("click", exportJson);
     $("exportCsvBtn").addEventListener("click", exportCsv);
     $("resetBtn").addEventListener("click", resetSession);
+    $("settingsBtn").addEventListener("click", openSettings);
+    $("settingsFinishBtn").addEventListener("click", () => { closeAllModals(); showReview(); });
+    $("settingsRestartBtn").addEventListener("click", resetSession);
+    $("settingsBackToSetupBtn").addEventListener("click", () => { closeAllModals(); showScreen("setup"); });
 
     $("openKanseiBtn").addEventListener("click", () => openModal("kanseiModal"));
     $("openQuestionsBtn").addEventListener("click", () => openModal("questionsModal"));
@@ -153,10 +154,7 @@
     if (!response.interaction.first_seen_at) response.interaction.first_seen_at = now;
     response.interaction.last_seen_at = now;
 
-    $("participantSummary").textContent = `${state.participant.participant_id} · Group ${state.participant.group}`;
-    $("progressText").textContent = `Video ${state.currentIndex + 1} / ${state.videos.length}`;
-    $("videoTitle").textContent = video.title || video.id;
-    $("videoId").textContent = video.id;
+    $("progressText").textContent = `Video ${state.currentIndex + 1}/${state.videos.length}`;
 
     const player = $("videoPlayer");
     player.pause();
@@ -167,7 +165,7 @@
     player.load();
 
     $("prevVideoBtn").disabled = state.currentIndex === 0;
-    $("nextVideoBtn").textContent = state.currentIndex === state.videos.length - 1 ? "Review" : "Next";
+    $("nextVideoBtn").setAttribute("aria-label", state.currentIndex === state.videos.length - 1 ? "Review and export" : "Go to next video");
 
     renderKanseiForm();
     renderQuestionsForm();
@@ -324,13 +322,13 @@
     $("questionsStatus").classList.toggle("done", questionsDone);
 
     if (kanseiDone && questionsDone) {
-      $("completionHint").textContent = "Current video completed.";
+      $("completionHint").textContent = state.currentIndex === state.videos.length - 1 ? "Completed. Use ↓ or Settings to finish." : "Completed. Use ↓ for next video.";
       $("nextVideoBtn").disabled = false;
     } else {
       const missing = [];
       if (!kanseiDone) missing.push("Kansei");
       if (!questionsDone) missing.push("Questions");
-      $("completionHint").textContent = `Complete: ${missing.join(" + ")}`;
+      $("completionHint").textContent = `Complete: ${missing.join(" + ")} before moving forward.`;
       $("nextVideoBtn").disabled = true;
     }
   }
@@ -376,7 +374,7 @@
       const row = document.createElement("div");
       row.className = "review-row";
       row.innerHTML = `
-        <div><strong>${index + 1}. ${escapeHtml(video.title || video.id)}</strong><div class="small-muted">${escapeHtml(video.id)}</div></div>
+        <div><strong>${index + 1}. Video ${escapeHtml(video.id)}</strong><div class="small-muted">${escapeHtml(video.title || video.id)}</div></div>
         <span class="badge ${complete ? "complete" : "incomplete"}">${complete ? "Complete" : "Incomplete"}</span>
       `;
       row.addEventListener("click", () => {
@@ -461,6 +459,15 @@
     location.reload();
   }
 
+  function openSettings() {
+    const completed = Object.values(state.responses).filter((r) => r.kansei_completed && r.questions_completed).length;
+    $("settingsParticipantId").textContent = state.participant?.participant_id || "-";
+    $("settingsGroup").textContent = state.participant?.group ? `Group ${state.participant.group}` : "-";
+    $("settingsEmail").textContent = state.participant?.email || "Not provided";
+    $("settingsProgress").textContent = `${completed}/${state.videos.length} completed`;
+    openModal("settingsModal");
+  }
+
   function openModal(id) {
     const video = state.videos[state.currentIndex];
     const response = state.responses[video.id];
@@ -475,7 +482,7 @@
 
   function closeModal(id) {
     $(id).classList.add("hidden");
-    if ($("kanseiModal").classList.contains("hidden") && $("questionsModal").classList.contains("hidden")) {
+    if ($("kanseiModal").classList.contains("hidden") && $("questionsModal").classList.contains("hidden") && $("settingsModal").classList.contains("hidden")) {
       $("modalBackdrop").classList.add("hidden");
     }
   }
@@ -483,6 +490,7 @@
   function closeAllModals() {
     $("kanseiModal").classList.add("hidden");
     $("questionsModal").classList.add("hidden");
+    $("settingsModal").classList.add("hidden");
     $("modalBackdrop").classList.add("hidden");
   }
 

@@ -1,21 +1,38 @@
-# Kansei Short-Form Video Survey App v2
+# Kansei Short-Form Video Survey App v3
 
-This is a frontend-only prototype for a mobile-first short-form video survey.
+This is a frontend-only prototype for a mobile-first Kansei evaluation experiment using local short-form videos.
+
+## Main changes in v3
+
+- The survey screen now follows a single mobile video-screen design.
+- The video occupies the main screen area.
+- The progress indicator appears at the top-left as `Video 1/10`.
+- Video titles are not displayed to participants to avoid bias.
+- A right-side vertical overlay menu provides:
+  - Kansei rating
+  - Additional questions
+  - Previous video
+  - Next video
+  - Settings
+- The settings modal contains:
+  - Participant ID
+  - Group
+  - Optional email
+  - Progress
+  - Finish/export button
+  - Restart button
+  - Back-to-setup button
 
 ## Features
 
 - Participant setup screen
 - Participant ID, group selection, optional email
-- Kansei adjective explanation screen
+- Kansei adjective explanation before the experiment starts
 - Three configurable groups: A, B, C
 - Randomized video order within the selected group
 - Local MP4 video playback
-- Mobile-first short-form video interface
-- Overlay buttons for:
-  - Kansei rating
-  - Additional questions
 - 7-point bipolar Kansei scale stored as `-3` to `+3`
-- Post-video questions modal
+- Additional post-video questions
 - Required completion check before moving forward
 - Back navigation to previous videos
 - Review page
@@ -26,7 +43,7 @@ This is a frontend-only prototype for a mobile-first short-form video survey.
 ## File structure
 
 ```text
-kansei_video_survey_v2/
+kansei_video_survey_v3/
   index.html
   style.css
   config.js
@@ -59,6 +76,8 @@ A: [
   { id: "A02", title: "Video A02", src: "videos/group-a/a02.mp4" }
 ]
 ```
+
+The `title` field is kept internally for data management and review/export, but it is not shown on the main participant video screen.
 
 ## How to edit Kansei adjective pairs
 
@@ -136,5 +155,4 @@ The exported JSON contains:
 
 ## Copyright / ethics note
 
-The app supports local videos for reliability, but this does not automatically solve copyright or platform-terms issues.
-For a controlled experiment, prefer videos that are created by the lab/student, licensed for reuse, used with permission, or otherwise cleared by the institution's research/ethics process.
+The app supports local videos for reliability, but this does not automatically solve copyright or platform-terms issues. For a controlled experiment, prefer videos that are created by the lab/student, licensed for reuse, used with permission, or otherwise cleared by the institution's research/ethics process.

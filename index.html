@@ -49,16 +49,7 @@
     </section>
 
     <section id="surveyScreen" class="screen survey-screen hidden">
-      <header class="top-bar">
-        <button id="backToSetupBtn" class="icon-btn" type="button" aria-label="Back to setup">←</button>
-        <div>
-          <strong id="surveyTitle"></strong>
-          <div id="participantSummary" class="small-muted"></div>
-        </div>
-        <button id="finishBtn" class="secondary-btn small" type="button">Finish</button>
-      </header>
-
-      <div class="phone-shell">
+      <div class="phone-shell" aria-label="Short-form video survey screen">
         <section id="videoStage" class="video-stage" aria-live="polite">
           <video id="videoPlayer" class="video-player" controls playsinline preload="metadata"></video>
 
@@ -67,28 +58,40 @@
             <p>Check that the local video path in <code>config.js</code> is correct.</p>
           </div>
 
-          <div class="overlay top-overlay">
-            <div id="progressText" class="progress-pill">Video 1 / 10</div>
+          <div class="progress-pill" id="progressText">Video 1/10</div>
+
+          <div class="side-controls" aria-label="Survey controls">
+            <button id="openKanseiBtn" class="round-action" type="button" aria-label="Open Kansei rating">
+              <span class="action-icon">♡</span>
+              <span class="action-label">Kansei</span>
+              <span id="kanseiStatus" class="status-dot" aria-hidden="true">○</span>
+            </button>
+
+            <button id="openQuestionsBtn" class="round-action" type="button" aria-label="Open additional questions">
+              <span class="action-icon">?</span>
+              <span class="action-label">Questions</span>
+              <span id="questionsStatus" class="status-dot" aria-hidden="true">○</span>
+            </button>
+
+            <button id="prevVideoBtn" class="round-action" type="button" aria-label="Go to previous video">
+              <span class="action-icon">↑</span>
+              <span class="action-label">Previous</span>
+            </button>
+
+            <button id="nextVideoBtn" class="round-action" type="button" aria-label="Go to next video">
+              <span class="action-icon">↓</span>
+              <span class="action-label">Next</span>
+            </button>
+
+            <button id="settingsBtn" class="round-action" type="button" aria-label="Open settings">
+              <span class="action-icon">⚙</span>
+              <span class="action-label">Settings</span>
+            </button>
           </div>
 
-          <div class="overlay bottom-overlay">
-            <div>
-              <h2 id="videoTitle">Video</h2>
-              <p id="videoId" class="small-muted"></p>
-            </div>
-            <div class="overlay-actions">
-              <button id="openKanseiBtn" class="overlay-btn" type="button">Kansei <span id="kanseiStatus" class="status-dot">○</span></button>
-              <button id="openQuestionsBtn" class="overlay-btn" type="button">Questions <span id="questionsStatus" class="status-dot">○</span></button>
-            </div>
-          </div>
+          <div id="completionHint" class="completion-hint"></div>
         </section>
       </div>
-
-      <nav class="survey-nav">
-        <button id="prevVideoBtn" type="button" class="secondary-btn">Previous</button>
-        <div id="completionHint" class="completion-hint"></div>
-        <button id="nextVideoBtn" type="button" class="primary-btn">Next</button>
-      </nav>
     </section>
 
     <section id="reviewScreen" class="screen review-screen hidden">
@@ -135,6 +138,31 @@
     <form id="questionsForm" class="sheet-body"></form>
     <div class="sheet-footer">
       <button id="saveQuestionsBtn" type="button" class="primary-btn full">Save answers</button>
+    </div>
+  </section>
+
+  <section id="settingsModal" class="bottom-sheet compact-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div>
+        <h2 id="settingsModalTitle">Settings</h2>
+        <p class="small-muted">Survey session controls.</p>
+      </div>
+      <button class="icon-btn close-modal" data-close="settingsModal" type="button">×</button>
+    </div>
+    <div class="sheet-body settings-body">
+      <div class="info-card">
+        <div><span>Participant ID</span><strong id="settingsParticipantId">-</strong></div>
+        <div><span>Group</span><strong id="settingsGroup">-</strong></div>
+        <div><span>Email</span><strong id="settingsEmail">-</strong></div>
+        <div><span>Progress</span><strong id="settingsProgress">-</strong></div>
+      </div>
+      <p class="small-note">Restart clears the current saved session on this device. Finish opens the review/export screen.</p>
+    </div>
+    <div class="sheet-footer stacked-footer">
+      <button id="settingsFinishBtn" type="button" class="primary-btn full">Finish / Export</button>
+      <button id="settingsRestartBtn" type="button" class="danger-btn full">Restart survey</button>
+      <button id="settingsBackToSetupBtn" type="button" class="secondary-btn full">Back to setup</button>
     </div>
   </section>
 
