@@ -1,83 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Short-Form Video Emotion Rating Survey</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Kansei Short-Form Video Survey</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="app-container">
-    <section id="intro-screen" class="screen active">
-      <h1 id="experiment-title">Short-Form Video Emotion Rating Survey</h1>
+  <main id="app">
+    <section id="setupScreen" class="screen setup-screen">
+      <div class="card setup-card">
+        <p class="eyebrow">Student experiment</p>
+        <h1 id="experimentTitle">Short-Form Video Kansei Survey</h1>
+        <p id="instructions" class="lead"></p>
 
-      <p>
-        In this experiment, you will watch a set of short videos and rate each video using several emotion scales.
-        Each scale ranges from a negative or lower-intensity emotion on the left to a positive or higher-intensity emotion on the right.
-      </p>
+        <details class="info-box" open>
+          <summary>Kansei adjective explanation</summary>
+          <p id="kanseiExplanation"></p>
+          <div class="example-scale" aria-label="Example Kansei scale">
+            <span>Boring</span>
+            <span class="dots">○ ○ ○ ● ○ ○ ○</span>
+            <span>Interesting</span>
+          </div>
+        </details>
 
-      <p>
-        Please watch each video carefully, then select one value for every emotion pair.
-        You may go back and change your answers before exporting your result file.
-      </p>
+        <form id="setupForm" class="setup-form">
+          <label>
+            Participant ID <span class="required">*</span>
+            <input id="participantId" name="participantId" type="text" autocomplete="off" required placeholder="e.g., P001" />
+          </label>
 
-      <div class="form-block">
-        <label for="group-select">Assigned group</label>
-        <select id="group-select"></select>
+          <label>
+            Group <span class="required">*</span>
+            <select id="groupSelect" name="groupSelect" required></select>
+          </label>
+
+          <label>
+            Email, optional
+            <input id="participantEmail" name="participantEmail" type="email" autocomplete="email" placeholder="optional@example.com" />
+          </label>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-btn">Start survey</button>
+            <button id="resumeBtn" type="button" class="secondary-btn hidden">Resume saved session</button>
+          </div>
+        </form>
       </div>
-
-      <div class="form-block">
-        <label for="participant-email">Email address (optional)</label>
-        <input id="participant-email" type="email" placeholder="optional@example.com" />
-      </div>
-
-      <button id="start-button">Start Survey</button>
     </section>
 
-    <section id="survey-screen" class="screen">
-      <div class="survey-header">
+    <section id="surveyScreen" class="screen survey-screen hidden">
+      <header class="top-bar">
+        <button id="backToSetupBtn" class="icon-btn" type="button" aria-label="Back to setup">←</button>
         <div>
-          <h2 id="video-progress">Video 1 / 10</h2>
-          <p id="video-id-label"></p>
+          <strong id="surveyTitle"></strong>
+          <div id="participantSummary" class="small-muted"></div>
         </div>
-        <button id="restart-button" class="secondary">Restart</button>
+        <button id="finishBtn" class="secondary-btn small" type="button">Finish</button>
+      </header>
+
+      <div class="phone-shell">
+        <section id="videoStage" class="video-stage" aria-live="polite">
+          <video id="videoPlayer" class="video-player" controls playsinline preload="metadata"></video>
+
+          <div class="video-fallback hidden" id="videoFallback">
+            <strong>Video file not found or cannot be played.</strong>
+            <p>Check that the local video path in <code>config.js</code> is correct.</p>
+          </div>
+
+          <div class="overlay top-overlay">
+            <div id="progressText" class="progress-pill">Video 1 / 10</div>
+          </div>
+
+          <div class="overlay bottom-overlay">
+            <div>
+              <h2 id="videoTitle">Video</h2>
+              <p id="videoId" class="small-muted"></p>
+            </div>
+            <div class="overlay-actions">
+              <button id="openKanseiBtn" class="overlay-btn" type="button">Kansei <span id="kanseiStatus" class="status-dot">○</span></button>
+              <button id="openQuestionsBtn" class="overlay-btn" type="button">Questions <span id="questionsStatus" class="status-dot">○</span></button>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <div class="survey-layout">
-        <div class="video-panel">
-          <div id="video-container" class="video-container"></div>
-        </div>
-
-        <div class="rating-panel">
-          <h3>Emotion ratings</h3>
-          <p class="scale-help">Left = -2, middle = 0, right = +2</p>
-          <div id="ratings-container"></div>
-        </div>
-      </div>
-
-      <div class="navigation-bar">
-        <button id="previous-button" class="secondary">Previous</button>
-        <button id="next-button">Next</button>
-      </div>
+      <nav class="survey-nav">
+        <button id="prevVideoBtn" type="button" class="secondary-btn">Previous</button>
+        <div id="completionHint" class="completion-hint"></div>
+        <button id="nextVideoBtn" type="button" class="primary-btn">Next</button>
+      </nav>
     </section>
 
-    <section id="finish-screen" class="screen">
-      <h2>Survey Complete</h2>
-      <p>
-        Thank you. Please export your result as a JSON file and send it to the researcher or instructor.
-      </p>
-
-      <div class="export-actions">
-        <button id="download-json-button">Download JSON</button>
-        <button id="download-csv-button" class="secondary">Download CSV</button>
+    <section id="reviewScreen" class="screen review-screen hidden">
+      <div class="card review-card">
+        <h1>Review and export</h1>
+        <p id="reviewSummary" class="lead"></p>
+        <div id="reviewList" class="review-list"></div>
+        <div class="form-actions wrap">
+          <button id="backToSurveyBtn" type="button" class="secondary-btn">Back to survey</button>
+          <button id="exportJsonBtn" type="button" class="primary-btn">Export JSON</button>
+          <button id="exportCsvBtn" type="button" class="secondary-btn">Export CSV</button>
+          <button id="resetBtn" type="button" class="danger-btn">Reset session</button>
+        </div>
       </div>
-
-      <h3>Preview</h3>
-      <pre id="result-preview"></pre>
-
-      <button id="back-to-survey-button" class="secondary">Back to Survey</button>
     </section>
   </main>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden" role="presentation"></div>
+
+  <section id="kanseiModal" class="bottom-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="kanseiModalTitle">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div>
+        <h2 id="kanseiModalTitle">Kansei rating</h2>
+        <p class="small-muted">Rate your impression using the 7-point scale.</p>
+      </div>
+      <button class="icon-btn close-modal" data-close="kanseiModal" type="button">×</button>
+    </div>
+    <form id="kanseiForm" class="sheet-body"></form>
+    <div class="sheet-footer">
+      <button id="saveKanseiBtn" type="button" class="primary-btn full">Save Kansei ratings</button>
+    </div>
+  </section>
+
+  <section id="questionsModal" class="bottom-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="questionsModalTitle">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div>
+        <h2 id="questionsModalTitle">Additional questions</h2>
+        <p class="small-muted">Answer the questions for the current video.</p>
+      </div>
+      <button class="icon-btn close-modal" data-close="questionsModal" type="button">×</button>
+    </div>
+    <form id="questionsForm" class="sheet-body"></form>
+    <div class="sheet-footer">
+      <button id="saveQuestionsBtn" type="button" class="primary-btn full">Save answers</button>
+    </div>
+  </section>
 
   <script src="config.js"></script>
   <script src="app.js"></script>
