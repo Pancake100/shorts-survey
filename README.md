@@ -1,10 +1,10 @@
-# Kansei Short-Form Video Survey App v3
+# Kansei Short-Form Video Survey App v5
 
 This is a frontend-only prototype for a mobile-first Kansei evaluation experiment using local short-form videos.
 
-## Main changes in v3
+## Main changes in v5
 
-- The survey screen now follows a single mobile video-screen design.
+- The survey screen follows a single mobile video-screen design.
 - The video occupies the main screen area.
 - The progress indicator appears at the top-left as `Video 1/10`.
 - Video titles are not displayed to participants to avoid bias.
@@ -14,6 +14,14 @@ This is a frontend-only prototype for a mobile-first Kansei evaluation experimen
   - Previous video
   - Next video
   - Settings
+- Kansei adjective pairs now use a mobile-friendly directed layout without visible numbers:
+
+```text
+← Calm                         Energetic →
+○   ○   ○   ○   ○   ○   ○
+```
+
+- The visible arrows clarify scale direction without suggesting positive/negative value judgments.
 - The settings modal contains:
   - Participant ID
   - Group
@@ -43,7 +51,7 @@ This is a frontend-only prototype for a mobile-first Kansei evaluation experimen
 ## File structure
 
 ```text
-kansei_video_survey_v3/
+kansei_video_survey_v5/
   index.html
   style.css
   config.js
@@ -94,10 +102,12 @@ Example:
 }
 ```
 
-The app stores each answer as an integer:
+The participant does not see numbers. Internally, the app stores each answer as an integer for analysis:
 
 ```text
--3 -2 -1 0 +1 +2 +3
+leftmost = -3
+center   =  0
+rightmost = +3
 ```
 
 ## How to edit additional questions

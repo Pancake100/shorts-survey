@@ -11,7 +11,7 @@
 
 const CONFIG = {
   experimentTitle: "Short-Form Video Kansei Survey",
-  experimentVersion: "2.0-prototype",
+  experimentVersion: "2.1-prototype",
 
   instructions: `
     You will watch a set of short-form videos and rate your impression of each video.
@@ -20,10 +20,9 @@ const CONFIG = {
   `,
 
   kanseiExplanation: `
-    Kansei adjectives are pairs of opposite words used to describe your emotional or subjective impression.
+    Kansei adjectives are pairs of contrasting words used to describe your emotional or subjective impression.
     For each pair, choose the point that best represents how the video felt to you.
-    The center point means neutral or neither side. The left side corresponds to the negative/left adjective,
-    and the right side corresponds to the positive/right adjective.
+    The center point means neutral or balanced between the two adjectives.
   `,
 
   groups: {
