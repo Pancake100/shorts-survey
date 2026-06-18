@@ -1,52 +1,29 @@
-# Kansei Short-Form Video Survey App v7
+# Kansei Short-Form Video Survey App v8
 
-This is a frontend-only prototype for a mobile-first Kansei evaluation experiment using local short-form videos.
+This is a static, frontend-only prototype for a short-form video Kansei evaluation experiment.
 
-## Main changes in v7
+## Main changes in v8
 
-- The survey screen now follows a single mobile video-screen design.
-- The video occupies the main screen area.
-- The progress indicator appears at the top-left as `Video 1/10`.
-- Video titles are not displayed to participants to avoid bias.
-- The right-side vertical overlay menu now uses icon-only controls:
-  - `♡` for incomplete Kansei rating
-  - green `♥` for completed Kansei rating
-  - `?` for incomplete additional questions
-  - green bold `?` for completed additional questions
-  - `↑` for previous video
-  - `↓` for next video
-  - `⚙` for settings
-- The icon guide appears on the participant setup screen, not on the video screen.
-- The settings modal contains:
-  - Participant ID
-  - Group
-  - Optional email
-  - Progress
-  - Finish/submit button
-  - Restart button
-  - Back-to-setup button
+- Reorganized the per-video survey into **one evaluation form** instead of separate Kansei and Questions forms.
+- The video screen now has one heart button:
+  - `♡` = evaluation incomplete
+  - green `♥` = evaluation complete
+- The evaluation form contains five parts:
+  - Part A: Visual Impression
+  - Part B: Content Impression
+  - Part C: Audio Impression
+  - Part D: Voice / Narrator Impression
+  - Part E: Overall Evaluation
+- Parts A-D use 7-position Kansei adjective-pair scales with no visible numbers.
+- Part E includes overall survey questions.
+- CSV export is not included.
+- Primary completion method is **Submit**, which posts JSON to a configurable API endpoint.
+- **Export JSON** remains as a backup.
 
-## Features
-
-- Participant setup screen
-- Participant ID, group selection, optional email
-- Kansei adjective explanation before the experiment starts
-- Three configurable groups: A, B, C
-- Randomized video order within the selected group
-- Local MP4 video playback
-- 7-point bipolar Kansei scale stored as `-3` to `+3`
-- Additional post-video questions
-- Required completion check before moving forward
-- Back navigation to previous videos
-- Review page
-- Submit final JSON to a configurable API endpoint
-- JSON export as backup
-- Auto-save with `localStorage`
-
-## File structure
+## Files
 
 ```text
-kansei_video_survey_v7/
+kansei_video_survey_v8/
   index.html
   style.css
   config.js
@@ -58,117 +35,9 @@ kansei_video_survey_v7/
     group-c/
 ```
 
+## Running locally
 
-## Video screen icon behavior
-
-The main video screen intentionally hides button text to provide a more mobile short-form video experience. The visible icons are:
-
-```text
-♡ / ♥  Kansei rating: white outline before completion, green filled heart after completion
-?      Additional questions: white before completion, green and bold after completion
-↑      Previous video
-↓      Next video / review when the current video is complete
-⚙      Settings, finish/submit, or restart
-```
-
-The buttons still include accessible labels in the HTML through `aria-label` attributes.
-
-## How to add videos
-
-Put your MP4 files in the relevant group folder.
-
-Example:
-
-```text
-videos/group-a/a01.mp4
-videos/group-a/a02.mp4
-...
-videos/group-a/a10.mp4
-```
-
-Then edit `config.js`:
-
-```js
-A: [
-  { id: "A01", title: "Video A01", src: "videos/group-a/a01.mp4" },
-  { id: "A02", title: "Video A02", src: "videos/group-a/a02.mp4" }
-]
-```
-
-The `title` field is kept internally for data management and review/submit, but it is not shown on the main participant video screen.
-
-## How to edit Kansei adjective pairs
-
-Edit the `kanseiPairs` list in `config.js`.
-
-Example:
-
-```js
-{
-  id: "boring_interesting",
-  negative: "Boring",
-  positive: "Interesting",
-  definition: "How boring or interesting the video felt."
-}
-```
-
-The app stores each answer as an integer:
-
-```text
--3 -2 -1 0 +1 +2 +3
-```
-
-## How to edit additional questions
-
-Edit the `postVideoQuestions` list in `config.js`.
-
-Supported types in this prototype:
-
-```text
-yes_no
-likert_7
-text
-```
-
-Example:
-
-```js
-{
-  id: "wanted_to_skip",
-  label: "Did you want to skip the video at some point?",
-  type: "yes_no",
-  required: true
-}
-```
-
-## How to configure submission
-
-Edit `config.js` and set `submitEndpoint`:
-
-```js
-submitEndpoint: "https://example.com/api/survey-submit"
-```
-
-When the participant taps **Submit**, the app sends the same JSON payload used by **Export JSON** with:
-
-```http
-POST /your-endpoint
-Content-Type: application/json
-```
-
-If `submitEndpoint` is empty, the app shows an error message and the participant can still use **Export JSON** as a backup.
-
-The API can store the submitted file using the participant ID from:
-
-```text
-participant.participant_id
-```
-
-## How to run
-
-For the simplest test, open `index.html` in a browser.
-
-For more reliable local video playback, run a local server from the app folder:
+Unzip the folder and run a local web server from inside the app folder:
 
 ```bash
 python3 -m http.server 8000
@@ -180,20 +49,129 @@ Then open:
 http://localhost:8000
 ```
 
-## Submitted / exported JSON
+Using a local server is more reliable for local video playback than opening `index.html` directly.
 
-The submitted JSON and backup exported JSON contain:
+## Adding videos
 
-- experiment metadata
-- participant information
-- session ID
-- randomized video order
-- Kansei adjective definitions
-- post-video question definitions
-- per-video responses
-- completion status
-- light interaction timestamps
+Place MP4 files in the relevant group folder:
 
-## Copyright / ethics note
+```text
+videos/group-a/a01.mp4
+videos/group-a/a02.mp4
+...
+```
 
-The app supports local videos for reliability, but this does not automatically solve copyright or platform-terms issues. For a controlled experiment, prefer videos that are created by the lab/student, licensed for reuse, used with permission, or otherwise cleared by the institution's research/ethics process.
+Then update `config.js`:
+
+```js
+{ id: "A01", title: "Video A01", src: "videos/group-a/a01.mp4" }
+```
+
+The title is kept internally and exported, but the participant video screen only shows progress such as `Video 1/10`.
+
+## Configuring the submit endpoint
+
+In `config.js`, set:
+
+```js
+submitEndpoint: "https://example.com/api/survey-submit"
+```
+
+When the participant presses **Submit**, the app sends the complete JSON payload with:
+
+```http
+POST
+Content-Type: application/json
+```
+
+The API can use `participant.participant_id` to name the stored result file.
+
+## Evaluation form structure
+
+The form is configured in `CONFIG.evaluationSections`.
+
+Kansei sections use this structure:
+
+```js
+{
+  id: "visual_impression",
+  title: "Part A: Visual Impression",
+  type: "kansei_pairs",
+  pairs: [
+    { id: "attractive_unattractive", left: "Attractive", right: "Unattractive" }
+  ]
+}
+```
+
+Participants see:
+
+```text
+← Attractive                         Unattractive →
+○   ○   ○   ○   ○   ○   ○
+```
+
+Internally, values are stored as:
+
+```text
+-3 -2 -1 0 +1 +2 +3
+```
+
+This means:
+
+```text
+-3 = strongly toward the left adjective
+ 0 = neutral / balanced
++3 = strongly toward the right adjective
+```
+
+Part E uses ordinary questions, such as single-choice and 1–5 rating items.
+
+## JSON output structure
+
+The exported/submitted JSON includes:
+
+```json
+{
+  "participant": {
+    "participant_id": "P001",
+    "group": "A",
+    "email": "optional@example.com"
+  },
+  "session": {
+    "session_id": "P001_2026-...",
+    "started_at": "...",
+    "completed_at": "...",
+    "video_order": ["A03", "A01", "A08"],
+    "video_count": 10
+  },
+  "evaluation_sections": [...],
+  "responses": [
+    {
+      "video_id": "A03",
+      "video_title": "Video A03",
+      "video_src": "videos/group-a/a03.mp4",
+      "video_order_index": 1,
+      "evaluation_completed": true,
+      "evaluation": {
+        "visual_impression": {
+          "attractive_unattractive": -2,
+          "clear_confusing": 1
+        },
+        "overall_evaluation": {
+          "stopping_or_skipping": "slightly",
+          "first_bored_or_skip_point": "early_middle",
+          "overall_rating": 4
+        }
+      }
+    }
+  ]
+}
+```
+
+## Notes
+
+- The app uses local browser storage to preserve progress during a session.
+- The participant can go back to previous videos and edit answers.
+- Moving forward is blocked until the current video evaluation form is complete.
+- The app does not include videos. Add your own MP4 files.
+- Copyright and permission for video use should be handled by the research team.

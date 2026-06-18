@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = "kansei_video_survey_v7_session";
+  const STORAGE_KEY = "kansei_video_survey_v8_session";
   const SCALE_VALUES = [-3, -2, -1, 0, 1, 2, 3];
 
   const $ = (id) => document.getElementById(id);
@@ -53,10 +53,8 @@
     $("settingsRestartBtn").addEventListener("click", resetSession);
     $("settingsBackToSetupBtn").addEventListener("click", () => { closeAllModals(); showScreen("setup"); });
 
-    $("openKanseiBtn").addEventListener("click", () => openModal("kanseiModal"));
-    $("openQuestionsBtn").addEventListener("click", () => openModal("questionsModal"));
-    $("saveKanseiBtn").addEventListener("click", saveKanseiRatings);
-    $("saveQuestionsBtn").addEventListener("click", savePostVideoQuestions);
+    $("openEvaluationBtn").addEventListener("click", () => openModal("evaluationModal"));
+    $("saveEvaluationBtn").addEventListener("click", saveEvaluation);
 
     document.querySelectorAll(".close-modal").forEach((button) => {
       button.addEventListener("click", () => closeModal(button.dataset.close));
@@ -132,13 +130,10 @@
       video_title: video.title || video.id,
       video_src: video.src,
       video_order_index: index + 1,
-      kansei_completed: false,
-      questions_completed: false,
-      kansei_ratings: {},
-      post_video_questions: {},
+      evaluation_completed: false,
+      evaluation: {},
       interaction: {
-        opened_kansei_modal: false,
-        opened_questions_modal: false,
+        opened_evaluation_modal: false,
         first_seen_at: null,
         last_seen_at: null
       }
@@ -165,169 +160,160 @@
     player.load();
 
     $("prevVideoBtn").disabled = state.currentIndex === 0;
-    $("nextVideoBtn").setAttribute("aria-label", state.currentIndex === state.videos.length - 1 ? "Review and export" : "Go to next video");
+    $("nextVideoBtn").setAttribute("aria-label", state.currentIndex === state.videos.length - 1 ? "Review and submit" : "Go to next video");
 
-    renderKanseiForm();
-    renderQuestionsForm();
+    renderEvaluationForm();
     updateCompletionUi();
     saveState();
   }
 
-  function renderKanseiForm() {
+  function renderEvaluationForm() {
     const video = state.videos[state.currentIndex];
     const response = state.responses[video.id];
-    const form = $("kanseiForm");
+    const form = $("evaluationForm");
     form.innerHTML = "";
 
-    CONFIG.kanseiPairs.forEach((pair) => {
-      const item = document.createElement("section");
-      item.className = "scale-item";
-      item.innerHTML = `
-        <div class="scale-pair-title" aria-hidden="true">
-          <span class="pair-left">← ${escapeHtml(pair.negative)}</span>
-          <span class="pair-right">${escapeHtml(pair.positive)} →</span>
-        </div>
-        <p class="scale-definition">${escapeHtml(pair.definition || "")}</p>
-        <div class="radio-row kansei-radio-row" role="radiogroup" aria-label="${escapeHtml(pair.negative)} to ${escapeHtml(pair.positive)}">
-          ${SCALE_VALUES.map((value, index) => `
-            <label title="Position ${index + 1} of 7, from ${escapeHtml(pair.negative)} to ${escapeHtml(pair.positive)}">
-              <input type="radio" name="kansei_${escapeHtml(pair.id)}" value="${value}" ${response.kansei_ratings[pair.id] === value ? "checked" : ""}>
-              <span class="visually-hidden">Position ${index + 1} of 7, from ${escapeHtml(pair.negative)} to ${escapeHtml(pair.positive)}</span>
-            </label>
-          `).join("")}
+    CONFIG.evaluationSections.forEach((section) => {
+      const sectionEl = document.createElement("section");
+      sectionEl.className = "evaluation-section";
+      sectionEl.innerHTML = `
+        <div class="section-heading">
+          <h3>${escapeHtml(section.title)}</h3>
+          <p>${escapeHtml(section.description || "")}</p>
         </div>
       `;
-      form.appendChild(item);
-    });
-  }
 
-  function renderQuestionsForm() {
-    const video = state.videos[state.currentIndex];
-    const response = state.responses[video.id];
-    const form = $("questionsForm");
-    form.innerHTML = "";
-
-    CONFIG.postVideoQuestions.forEach((question) => {
-      const value = response.post_video_questions[question.id];
-      const item = document.createElement("section");
-      item.className = "question-item";
-      const requiredMark = question.required ? " <span class='required'>*</span>" : "";
-
-      if (question.type === "yes_no") {
-        item.innerHTML = `
-          <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
-          <div class="yes-no-row" role="radiogroup">
-            <label><input type="radio" name="q_${escapeHtml(question.id)}" value="yes" ${value === "yes" ? "checked" : ""}> Yes</label>
-            <label><input type="radio" name="q_${escapeHtml(question.id)}" value="no" ${value === "no" ? "checked" : ""}> No</label>
-          </div>
-        `;
-      } else if (question.type === "likert_7") {
-        item.innerHTML = `
-          <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
-          <div class="radio-row" role="radiogroup">
-            ${[1,2,3,4,5,6,7].map((score) => `
-              <label>
-                <input type="radio" name="q_${escapeHtml(question.id)}" value="${score}" ${Number(value) === score ? "checked" : ""}>
-                <span>${score}</span>
-              </label>
-            `).join("")}
-          </div>
-          <div class="likert-labels"><span>${escapeHtml(question.minLabel || "Low")}</span><span>${escapeHtml(question.maxLabel || "High")}</span></div>
-        `;
-      } else if (question.type === "text") {
-        item.innerHTML = `
-          <label>
-            ${escapeHtml(question.label)}${requiredMark}
-            <textarea name="q_${escapeHtml(question.id)}" placeholder="${escapeHtml(question.placeholder || "")}">${escapeHtml(value || "")}</textarea>
-          </label>
-        `;
+      if (section.type === "kansei_pairs") {
+        const pairsWrap = document.createElement("div");
+        pairsWrap.className = "section-items";
+        section.pairs.forEach((pair) => {
+          const stored = response.evaluation?.[section.id]?.[pair.id];
+          const item = document.createElement("section");
+          item.className = "scale-item";
+          item.innerHTML = `
+            <div class="scale-pair-title" aria-hidden="true">
+              <span class="pair-left">← ${escapeHtml(pair.left)}</span>
+              <span class="pair-right">${escapeHtml(pair.right)} →</span>
+            </div>
+            <div class="radio-row kansei-radio-row" role="radiogroup" aria-label="${escapeHtml(pair.left)} to ${escapeHtml(pair.right)}">
+              ${SCALE_VALUES.map((value, index) => `
+                <label title="Position ${index + 1} of 7, from ${escapeHtml(pair.left)} to ${escapeHtml(pair.right)}">
+                  <input type="radio" name="eval_${escapeHtml(section.id)}_${escapeHtml(pair.id)}" value="${value}" ${stored === value ? "checked" : ""}>
+                  <span class="visually-hidden">Position ${index + 1} of 7, from ${escapeHtml(pair.left)} to ${escapeHtml(pair.right)}</span>
+                </label>
+              `).join("")}
+            </div>
+          `;
+          pairsWrap.appendChild(item);
+        });
+        sectionEl.appendChild(pairsWrap);
       }
 
-      form.appendChild(item);
+      if (section.type === "questions") {
+        const questionsWrap = document.createElement("div");
+        questionsWrap.className = "section-items";
+        section.questions.forEach((question) => {
+          const value = response.evaluation?.[section.id]?.[question.id];
+          const item = document.createElement("section");
+          item.className = "question-item";
+          const requiredMark = question.required ? " <span class='required'>*</span>" : "";
+
+          if (question.type === "single_choice") {
+            item.innerHTML = `
+              <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
+              <div class="choice-list" role="radiogroup">
+                ${question.options.map((option) => `
+                  <label>
+                    <input type="radio" name="eval_${escapeHtml(section.id)}_${escapeHtml(question.id)}" value="${escapeHtml(option.value)}" ${value === option.value ? "checked" : ""}>
+                    <span>${escapeHtml(option.label)}</span>
+                  </label>
+                `).join("")}
+              </div>
+            `;
+          }
+
+          if (question.type === "rating_5") {
+            item.innerHTML = `
+              <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
+              <div class="rating-five-row radio-row" role="radiogroup">
+                ${[1,2,3,4,5].map((score) => `
+                  <label>
+                    <input type="radio" name="eval_${escapeHtml(section.id)}_${escapeHtml(question.id)}" value="${score}" ${Number(value) === score ? "checked" : ""}>
+                    <span>${score}</span>
+                  </label>
+                `).join("")}
+              </div>
+              <div class="likert-labels"><span>${escapeHtml(question.minLabel || "Low")}</span><span>${escapeHtml(question.maxLabel || "High")}</span></div>
+            `;
+          }
+
+          questionsWrap.appendChild(item);
+        });
+        sectionEl.appendChild(questionsWrap);
+      }
+
+      form.appendChild(sectionEl);
     });
   }
 
-  function saveKanseiRatings() {
+  function saveEvaluation() {
     const video = state.videos[state.currentIndex];
     const response = state.responses[video.id];
-    const ratings = {};
+    const evaluation = {};
     const missing = [];
 
-    CONFIG.kanseiPairs.forEach((pair) => {
-      const selected = document.querySelector(`input[name="kansei_${cssEscape(pair.id)}"]:checked`);
-      if (!selected) missing.push(pair.negative + " / " + pair.positive);
-      else ratings[pair.id] = Number(selected.value);
+    CONFIG.evaluationSections.forEach((section) => {
+      evaluation[section.id] = {};
+
+      if (section.type === "kansei_pairs") {
+        section.pairs.forEach((pair) => {
+          const name = `eval_${section.id}_${pair.id}`;
+          const selected = document.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+          if (!selected) missing.push(`${section.title}: ${pair.left} / ${pair.right}`);
+          else evaluation[section.id][pair.id] = Number(selected.value);
+        });
+      }
+
+      if (section.type === "questions") {
+        section.questions.forEach((question) => {
+          const name = `eval_${section.id}_${question.id}`;
+          const selected = document.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+          if (!selected && question.required) missing.push(`${section.title}: ${question.label}`);
+          if (selected) {
+            evaluation[section.id][question.id] = question.type === "rating_5" ? Number(selected.value) : selected.value;
+          }
+        });
+      }
     });
 
-    removeValidationErrors($("kanseiForm"));
+    removeValidationErrors($("evaluationForm"));
     if (missing.length > 0) {
-      showValidationError($("kanseiForm"), `Please answer all Kansei pairs. Missing: ${missing.join(", ")}`);
+      showValidationError($("evaluationForm"), `Please complete the full evaluation form. Missing: ${missing.join(", ")}`);
       return;
     }
 
-    response.kansei_ratings = ratings;
-    response.kansei_completed = true;
-    response.interaction.opened_kansei_modal = true;
+    response.evaluation = evaluation;
+    response.evaluation_completed = true;
+    response.interaction.opened_evaluation_modal = true;
     response.interaction.last_seen_at = new Date().toISOString();
     saveState();
     updateCompletionUi();
-    closeModal("kanseiModal");
-  }
-
-  function savePostVideoQuestions() {
-    const video = state.videos[state.currentIndex];
-    const response = state.responses[video.id];
-    const answers = {};
-    const missing = [];
-
-    CONFIG.postVideoQuestions.forEach((question) => {
-      const name = `q_${question.id}`;
-      if (question.type === "text") {
-        const field = document.querySelector(`[name="${cssEscape(name)}"]`);
-        const value = field ? field.value.trim() : "";
-        if (question.required && !value) missing.push(question.label);
-        answers[question.id] = value;
-      } else {
-        const selected = document.querySelector(`input[name="${cssEscape(name)}"]:checked`);
-        if (!selected && question.required) missing.push(question.label);
-        if (selected) answers[question.id] = question.type === "likert_7" ? Number(selected.value) : selected.value;
-      }
-    });
-
-    removeValidationErrors($("questionsForm"));
-    if (missing.length > 0) {
-      showValidationError($("questionsForm"), `Please answer required questions. Missing: ${missing.join(", ")}`);
-      return;
-    }
-
-    response.post_video_questions = answers;
-    response.questions_completed = true;
-    response.interaction.opened_questions_modal = true;
-    response.interaction.last_seen_at = new Date().toISOString();
-    saveState();
-    updateCompletionUi();
-    closeModal("questionsModal");
+    closeModal("evaluationModal");
   }
 
   function updateCompletionUi() {
     const video = state.videos[state.currentIndex];
     const response = state.responses[video.id];
-    const kanseiDone = response.kansei_completed;
-    const questionsDone = response.questions_completed;
+    const done = response.evaluation_completed;
 
-    $("kanseiIcon").textContent = kanseiDone ? "♥" : "♡";
-    $("openKanseiBtn").classList.toggle("is-complete", kanseiDone);
-    $("questionsIcon").textContent = "?";
-    $("openQuestionsBtn").classList.toggle("is-complete", questionsDone);
+    $("evaluationIcon").textContent = done ? "♥" : "♡";
+    $("openEvaluationBtn").classList.toggle("is-complete", done);
 
-    if (kanseiDone && questionsDone) {
-      $("completionHint").textContent = state.currentIndex === state.videos.length - 1 ? "Completed. Use ↓ or Settings to finish." : "Completed. Use ↓ for next video.";
+    if (done) {
+      $("completionHint").textContent = state.currentIndex === state.videos.length - 1 ? "Evaluation completed. Use ↓ or Settings to finish." : "Evaluation completed. Use ↓ for next video.";
       $("nextVideoBtn").disabled = false;
     } else {
-      const missing = [];
-      if (!kanseiDone) missing.push("Kansei");
-      if (!questionsDone) missing.push("Questions");
-      $("completionHint").textContent = `Complete: ${missing.join(" + ")} before moving forward.`;
+      $("completionHint").textContent = "Complete the evaluation form before moving forward.";
       $("nextVideoBtn").disabled = true;
     }
   }
@@ -341,8 +327,8 @@
   function nextVideo() {
     const video = state.videos[state.currentIndex];
     const response = state.responses[video.id];
-    if (!response.kansei_completed || !response.questions_completed) {
-      alert("Please complete both Kansei ratings and additional questions before moving forward.");
+    if (!response.evaluation_completed) {
+      alert("Please complete the evaluation form before moving forward.");
       return;
     }
 
@@ -362,14 +348,14 @@
   }
 
   function renderReview() {
-    const completed = Object.values(state.responses).filter((r) => r.kansei_completed && r.questions_completed).length;
-    $("reviewSummary").textContent = `${completed} / ${state.videos.length} videos completed. Submit is available when all required answers are complete. Export JSON is available as a backup.`;
+    const completed = Object.values(state.responses).filter((r) => r.evaluation_completed).length;
+    $("reviewSummary").textContent = `${completed} / ${state.videos.length} videos completed. Submit is available when all required evaluations are complete. Export JSON is available as a backup.`;
 
     const list = $("reviewList");
     list.innerHTML = "";
     state.videos.forEach((video, index) => {
       const response = state.responses[video.id];
-      const complete = response.kansei_completed && response.questions_completed;
+      const complete = response.evaluation_completed;
       const row = document.createElement("div");
       row.className = "review-row";
       row.innerHTML = `
@@ -390,17 +376,16 @@
       experiment: {
         title: CONFIG.experimentTitle,
         version: CONFIG.experimentVersion,
-        scale: "7-point bipolar Kansei scale; participant-facing form hides numeric labels; stored as integers from -3 to +3"
+        scale: "7-point bipolar Kansei sections stored as integers from -3 to +3; participant-facing form hides numeric labels"
       },
       participant: state.participant,
       session: {
         ...state.session,
         completed_at: state.completedAt,
         video_count: state.videos.length,
-        interface: "mobile-first short-form video feed with rating modals"
+        interface: "mobile-first short-form video screen with one multi-part evaluation form"
       },
-      kansei_pairs: CONFIG.kanseiPairs,
-      post_video_questions: CONFIG.postVideoQuestions,
+      evaluation_sections: CONFIG.evaluationSections,
       responses: state.videos.map((video) => state.responses[video.id])
     };
   }
@@ -418,7 +403,7 @@
     status.className = "submit-status";
 
     if (!allResponsesComplete()) {
-      status.textContent = "Please complete all Kansei ratings and additional questions before submitting.";
+      status.textContent = "Please complete all video evaluation forms before submitting.";
       status.classList.add("error");
       return;
     }
@@ -439,17 +424,15 @@
       submitButton.textContent = "Submitting...";
       status.textContent = "Submitting results...";
 
-      const response = await fetch(endpoint, {
+      const submitResponse = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
 
-      if (!response.ok) {
-        const message = await response.text().catch(() => "");
-        throw new Error(`Server returned ${response.status}${message ? `: ${message}` : ""}`);
+      if (!submitResponse.ok) {
+        const message = await submitResponse.text().catch(() => "");
+        throw new Error(`Server returned ${submitResponse.status}${message ? `: ${message}` : ""}`);
       }
 
       status.textContent = "Submission successful. Thank you.";
@@ -464,7 +447,6 @@
     }
   }
 
-
   function resetSession() {
     const ok = confirm("Reset the current session? Submit or export your data first if you need it.");
     if (!ok) return;
@@ -473,7 +455,7 @@
   }
 
   function openSettings() {
-    const completed = Object.values(state.responses).filter((r) => r.kansei_completed && r.questions_completed).length;
+    const completed = Object.values(state.responses).filter((r) => r.evaluation_completed).length;
     $("settingsParticipantId").textContent = state.participant?.participant_id || "-";
     $("settingsGroup").textContent = state.participant?.group ? `Group ${state.participant.group}` : "-";
     $("settingsEmail").textContent = state.participant?.email || "Not provided";
@@ -482,12 +464,13 @@
   }
 
   function openModal(id) {
-    const video = state.videos[state.currentIndex];
-    const response = state.responses[video.id];
-    if (id === "kanseiModal") response.interaction.opened_kansei_modal = true;
-    if (id === "questionsModal") response.interaction.opened_questions_modal = true;
-    response.interaction.last_seen_at = new Date().toISOString();
-    saveState();
+    if (id === "evaluationModal") {
+      const video = state.videos[state.currentIndex];
+      const response = state.responses[video.id];
+      response.interaction.opened_evaluation_modal = true;
+      response.interaction.last_seen_at = new Date().toISOString();
+      saveState();
+    }
 
     $("modalBackdrop").classList.remove("hidden");
     $(id).classList.remove("hidden");
@@ -495,14 +478,13 @@
 
   function closeModal(id) {
     $(id).classList.add("hidden");
-    if ($("kanseiModal").classList.contains("hidden") && $("questionsModal").classList.contains("hidden") && $("settingsModal").classList.contains("hidden")) {
+    if ($("evaluationModal").classList.contains("hidden") && $("settingsModal").classList.contains("hidden")) {
       $("modalBackdrop").classList.add("hidden");
     }
   }
 
   function closeAllModals() {
-    $("kanseiModal").classList.add("hidden");
-    $("questionsModal").classList.add("hidden");
+    $("evaluationModal").classList.add("hidden");
     $("settingsModal").classList.add("hidden");
     $("modalBackdrop").classList.add("hidden");
   }
@@ -515,7 +497,7 @@
   }
 
   function allResponsesComplete() {
-    return Object.values(state.responses).every((r) => r.kansei_completed && r.questions_completed);
+    return Object.values(state.responses).every((r) => r.evaluation_completed);
   }
 
   function saveState() {
@@ -561,17 +543,12 @@
     URL.revokeObjectURL(url);
   }
 
-  function valueOrEmpty(value) {
-    return value === undefined || value === null ? "" : value;
-  }
-
-
   function escapeHtml(value) {
     return String(value || "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
+      .replace(/\"/g, "&quot;")
       .replace(/'/g, "&#039;");
   }
 

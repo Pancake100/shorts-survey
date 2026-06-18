@@ -448,3 +448,80 @@ textarea { min-height: 88px; resize: vertical; }
 }
 .submit-status.success { color: #15803d; }
 .submit-status.error { color: var(--danger); }
+
+/* v8 single evaluation form additions */
+.example-pair-row {
+  width: min(340px, 100%);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 800;
+}
+
+.evaluation-section {
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+  padding: 14px;
+  background: #f8fbff;
+  display: grid;
+  gap: 14px;
+}
+
+.section-heading h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  color: #111827;
+}
+
+.section-heading p {
+  margin: 0;
+  color: #4b5563;
+  font-size: .9rem;
+  line-height: 1.55;
+}
+
+.section-items {
+  display: grid;
+  gap: 12px;
+}
+
+.choice-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.choice-list label {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: #fff;
+  font-weight: 650;
+}
+
+.choice-list input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary);
+}
+
+.rating-five-row {
+  grid-template-columns: repeat(5, 1fr);
+  margin-top: 12px;
+}
+
+.rating-five-row label span {
+  font-size: .9rem;
+  font-weight: 800;
+}
+
+@media (max-width: 560px) {
+  .evaluation-section { padding: 12px; }
+  .section-heading h3 { font-size: 1rem; }
+  .section-heading p { font-size: .86rem; }
+  .choice-list label { padding: 10px; }
+}

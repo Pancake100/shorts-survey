@@ -18,7 +18,7 @@
           <summary>Kansei adjective explanation</summary>
           <p id="kanseiExplanation"></p>
           <div class="example-scale" aria-label="Example Kansei scale">
-            <div class="example-pair-row"><span>← Boring</span><span>Interesting →</span></div>
+            <div class="example-pair-row"><span>← Attractive</span><span>Unattractive →</span></div>
             <div class="dots">○ ○ ○ ● ○ ○ ○</div>
           </div>
         </details>
@@ -26,10 +26,9 @@
         <section class="info-box icon-guide" aria-label="Video screen icon guide">
           <h2>Video screen buttons</h2>
           <div class="icon-guide-grid">
-            <div><span class="guide-icon">♡ / <strong>♥</strong></span><span>Kansei rating. The heart becomes green after completion.</span></div>
-            <div><span class="guide-icon">?</span><span>Additional questions. The question mark becomes green and bold after completion.</span></div>
+            <div><span class="guide-icon">♡ / <strong>♥</strong></span><span>Evaluation form. The heart becomes green after the full form is completed.</span></div>
             <div><span class="guide-icon">↑</span><span>Previous video.</span></div>
-            <div><span class="guide-icon">↓</span><span>Next video. Available after both parts are completed.</span></div>
+            <div><span class="guide-icon">↓</span><span>Next video. Available after the evaluation form is completed.</span></div>
             <div><span class="guide-icon">⚙</span><span>Settings, finish, submit, or restart.</span></div>
           </div>
         </section>
@@ -71,12 +70,8 @@
           <div class="progress-pill" id="progressText">Video 1/10</div>
 
           <div class="side-controls" aria-label="Survey controls">
-            <button id="openKanseiBtn" class="round-action survey-icon-btn" type="button" aria-label="Open Kansei rating">
-              <span id="kanseiIcon" class="action-icon" aria-hidden="true">♡</span>
-            </button>
-
-            <button id="openQuestionsBtn" class="round-action survey-icon-btn" type="button" aria-label="Open additional questions">
-              <span id="questionsIcon" class="action-icon" aria-hidden="true">?</span>
+            <button id="openEvaluationBtn" class="round-action survey-icon-btn" type="button" aria-label="Open evaluation form">
+              <span id="evaluationIcon" class="action-icon" aria-hidden="true">♡</span>
             </button>
 
             <button id="prevVideoBtn" class="round-action survey-icon-btn" type="button" aria-label="Go to previous video">
@@ -115,33 +110,18 @@
 
   <div id="modalBackdrop" class="modal-backdrop hidden" role="presentation"></div>
 
-  <section id="kanseiModal" class="bottom-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="kanseiModalTitle">
+  <section id="evaluationModal" class="bottom-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="evaluationModalTitle">
     <div class="sheet-handle"></div>
     <div class="sheet-header">
       <div>
-        <h2 id="kanseiModalTitle">Kansei rating</h2>
-        <p class="small-muted">For each adjective pair, choose the point that best matches your impression.</p>
+        <h2 id="evaluationModalTitle">Evaluation form</h2>
+        <p class="small-muted">Complete all parts for the current video.</p>
       </div>
-      <button class="icon-btn close-modal" data-close="kanseiModal" type="button">×</button>
+      <button class="icon-btn close-modal" data-close="evaluationModal" type="button">×</button>
     </div>
-    <form id="kanseiForm" class="sheet-body"></form>
+    <form id="evaluationForm" class="sheet-body"></form>
     <div class="sheet-footer">
-      <button id="saveKanseiBtn" type="button" class="primary-btn full">Save Kansei ratings</button>
-    </div>
-  </section>
-
-  <section id="questionsModal" class="bottom-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="questionsModalTitle">
-    <div class="sheet-handle"></div>
-    <div class="sheet-header">
-      <div>
-        <h2 id="questionsModalTitle">Additional questions</h2>
-        <p class="small-muted">Answer the questions for the current video.</p>
-      </div>
-      <button class="icon-btn close-modal" data-close="questionsModal" type="button">×</button>
-    </div>
-    <form id="questionsForm" class="sheet-body"></form>
-    <div class="sheet-footer">
-      <button id="saveQuestionsBtn" type="button" class="primary-btn full">Save answers</button>
+      <button id="saveEvaluationBtn" type="button" class="primary-btn full">Save evaluation</button>
     </div>
   </section>
 
