@@ -439,3 +439,12 @@ textarea { min-height: 88px; resize: vertical; }
   .round-action { width: 52px; min-height: 52px; }
   .survey-icon-btn .action-icon { font-size: 1.65rem; }
 }
+
+.submit-status {
+  min-height: 1.4rem;
+  margin-top: 12px;
+  font-size: .95rem;
+  font-weight: 700;
+}
+.submit-status.success { color: #15803d; }
+.submit-status.error { color: var(--danger); }

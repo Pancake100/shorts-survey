@@ -11,12 +11,17 @@
 
 const CONFIG = {
   experimentTitle: "Short-Form Video Kansei Survey",
-  experimentVersion: "2.3-prototype",
+  experimentVersion: "2.4-prototype",
+
+  // API endpoint used by the Submit button.
+  // The app will POST the final JSON payload to this URL.
+  // Example: "https://example.com/api/survey-submit"
+  submitEndpoint: "",
 
   instructions: `
     You will watch a set of short-form videos and rate your impression of each video.
     For each video, please complete both the Kansei rating and the additional questions.
-    You may go back to previous videos and change your answers before exporting your result.
+    You may go back to previous videos and change your answers before submitting your result.
   `,
 
   kanseiExplanation: `

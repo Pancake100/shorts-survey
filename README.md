@@ -1,8 +1,8 @@
-# Kansei Short-Form Video Survey App v6
+# Kansei Short-Form Video Survey App v7
 
 This is a frontend-only prototype for a mobile-first Kansei evaluation experiment using local short-form videos.
 
-## Main changes in v6
+## Main changes in v7
 
 - The survey screen now follows a single mobile video-screen design.
 - The video occupies the main screen area.
@@ -22,7 +22,7 @@ This is a frontend-only prototype for a mobile-first Kansei evaluation experimen
   - Group
   - Optional email
   - Progress
-  - Finish/export button
+  - Finish/submit button
   - Restart button
   - Back-to-setup button
 
@@ -39,14 +39,14 @@ This is a frontend-only prototype for a mobile-first Kansei evaluation experimen
 - Required completion check before moving forward
 - Back navigation to previous videos
 - Review page
-- JSON export
-- CSV export
+- Submit final JSON to a configurable API endpoint
+- JSON export as backup
 - Auto-save with `localStorage`
 
 ## File structure
 
 ```text
-kansei_video_survey_v6/
+kansei_video_survey_v7/
   index.html
   style.css
   config.js
@@ -68,7 +68,7 @@ The main video screen intentionally hides button text to provide a more mobile s
 ?      Additional questions: white before completion, green and bold after completion
 ↑      Previous video
 ↓      Next video / review when the current video is complete
-⚙      Settings, finish/export, or restart
+⚙      Settings, finish/submit, or restart
 ```
 
 The buttons still include accessible labels in the HTML through `aria-label` attributes.
@@ -95,7 +95,7 @@ A: [
 ]
 ```
 
-The `title` field is kept internally for data management and review/export, but it is not shown on the main participant video screen.
+The `title` field is kept internally for data management and review/submit, but it is not shown on the main participant video screen.
 
 ## How to edit Kansei adjective pairs
 
@@ -141,6 +141,29 @@ Example:
 }
 ```
 
+## How to configure submission
+
+Edit `config.js` and set `submitEndpoint`:
+
+```js
+submitEndpoint: "https://example.com/api/survey-submit"
+```
+
+When the participant taps **Submit**, the app sends the same JSON payload used by **Export JSON** with:
+
+```http
+POST /your-endpoint
+Content-Type: application/json
+```
+
+If `submitEndpoint` is empty, the app shows an error message and the participant can still use **Export JSON** as a backup.
+
+The API can store the submitted file using the participant ID from:
+
+```text
+participant.participant_id
+```
+
 ## How to run
 
 For the simplest test, open `index.html` in a browser.
@@ -157,9 +180,9 @@ Then open:
 http://localhost:8000
 ```
 
-## Exported JSON
+## Submitted / exported JSON
 
-The exported JSON contains:
+The submitted JSON and backup exported JSON contain:
 
 - experiment metadata
 - participant information

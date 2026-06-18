@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = "kansei_video_survey_v6_session";
+  const STORAGE_KEY = "kansei_video_survey_v7_session";
   const SCALE_VALUES = [-3, -2, -1, 0, 1, 2, 3];
 
   const $ = (id) => document.getElementById(id);
@@ -45,8 +45,8 @@
     $("prevVideoBtn").addEventListener("click", prevVideo);
     $("nextVideoBtn").addEventListener("click", nextVideo);
     $("backToSurveyBtn").addEventListener("click", () => showScreen("survey"));
+    $("submitBtn").addEventListener("click", submitResults);
     $("exportJsonBtn").addEventListener("click", exportJson);
-    $("exportCsvBtn").addEventListener("click", exportCsv);
     $("resetBtn").addEventListener("click", resetSession);
     $("settingsBtn").addEventListener("click", openSettings);
     $("settingsFinishBtn").addEventListener("click", () => { closeAllModals(); showReview(); });
@@ -363,7 +363,7 @@
 
   function renderReview() {
     const completed = Object.values(state.responses).filter((r) => r.kansei_completed && r.questions_completed).length;
-    $("reviewSummary").textContent = `${completed} / ${state.videos.length} videos completed. Export is available, but ideally all videos should be complete before submission.`;
+    $("reviewSummary").textContent = `${completed} / ${state.videos.length} videos completed. Submit is available when all required answers are complete. Export JSON is available as a backup.`;
 
     const list = $("reviewList");
     list.innerHTML = "";
@@ -411,48 +411,62 @@
     downloadFile(filename, JSON.stringify(data, null, 2), "application/json");
   }
 
-  function exportCsv() {
+  async function submitResults() {
+    const status = $("submitStatus");
+    const submitButton = $("submitBtn");
+    status.textContent = "";
+    status.className = "submit-status";
+
+    if (!allResponsesComplete()) {
+      status.textContent = "Please complete all Kansei ratings and additional questions before submitting.";
+      status.classList.add("error");
+      return;
+    }
+
+    const endpoint = (CONFIG.submitEndpoint || "").trim();
+    if (!endpoint) {
+      status.textContent = "No submit endpoint is configured. Please set CONFIG.submitEndpoint in config.js, or use Export JSON as a backup.";
+      status.classList.add("error");
+      return;
+    }
+
+    state.completedAt = new Date().toISOString();
+    saveState();
     const data = buildExportObject();
-    const rows = [];
-    const kanseiIds = CONFIG.kanseiPairs.map((p) => p.id);
-    const questionIds = CONFIG.postVideoQuestions.map((q) => q.id);
-    const header = [
-      "participant_id", "group", "email", "session_id", "started_at", "completed_at",
-      "video_order_index", "video_id", "video_title", "video_src",
-      ...kanseiIds,
-      ...questionIds,
-      "kansei_completed", "questions_completed", "first_seen_at", "last_seen_at"
-    ];
-    rows.push(header);
 
-    data.responses.forEach((response) => {
-      rows.push([
-        data.participant.participant_id,
-        data.participant.group,
-        data.participant.email,
-        data.session.session_id,
-        data.session.started_at,
-        data.session.completed_at || "",
-        response.video_order_index,
-        response.video_id,
-        response.video_title,
-        response.video_src,
-        ...kanseiIds.map((id) => valueOrEmpty(response.kansei_ratings[id])),
-        ...questionIds.map((id) => valueOrEmpty(response.post_video_questions[id])),
-        response.kansei_completed,
-        response.questions_completed,
-        response.interaction.first_seen_at || "",
-        response.interaction.last_seen_at || ""
-      ]);
-    });
+    try {
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+      status.textContent = "Submitting results...";
 
-    const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\n");
-    const filename = `${safeFileName(state.participant.participant_id)}_${state.participant.group}_${state.session.session_id}.csv`;
-    downloadFile(filename, csv, "text/csv;charset=utf-8");
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        const message = await response.text().catch(() => "");
+        throw new Error(`Server returned ${response.status}${message ? `: ${message}` : ""}`);
+      }
+
+      status.textContent = "Submission successful. Thank you.";
+      status.classList.add("success");
+    } catch (error) {
+      console.error(error);
+      status.textContent = `Submission failed: ${error.message}. You can use Export JSON as a backup.`;
+      status.classList.add("error");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit";
+    }
   }
 
+
   function resetSession() {
-    const ok = confirm("Reset the current session? Export your data first if you need it.");
+    const ok = confirm("Reset the current session? Submit or export your data first if you need it.");
     if (!ok) return;
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
@@ -551,11 +565,6 @@
     return value === undefined || value === null ? "" : value;
   }
 
-  function csvEscape(value) {
-    const text = String(valueOrEmpty(value));
-    if (/[",\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
-    return text;
-  }
 
   function escapeHtml(value) {
     return String(value || "")
