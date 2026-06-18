@@ -1,11 +1,20 @@
 (() => {
-  const STORAGE_KEY = "kansei_video_survey_v8_session";
+  const STORAGE_KEY = "kansei_video_survey_v9_session";
+  const SETUP_ID_KEY = "kansei_video_survey_v9_participant_id";
   const SCALE_VALUES = [-3, -2, -1, 0, 1, 2, 3];
+
+  const CONFIG = {
+    app: APP_CONFIG,
+    videos: VIDEOS_CONFIG,
+    preliminary: PRELIMINARY_CONFIG,
+    evaluation: EVALUATION_CONFIG
+  };
 
   const $ = (id) => document.getElementById(id);
 
   const state = {
     participant: null,
+    preliminary_questionnaire: null,
     session: null,
     videos: [],
     currentIndex: 0,
@@ -18,25 +27,33 @@
   function init() {
     hydrateStaticText();
     populateGroups();
+    renderPreliminaryQuestionnaire();
+    showGeneratedParticipantId();
     bindEvents();
     checkSavedSession();
   }
 
   function hydrateStaticText() {
-    $("experimentTitle").textContent = CONFIG.experimentTitle;
-    $("instructions").textContent = CONFIG.instructions.trim();
-    $("kanseiExplanation").textContent = CONFIG.kanseiExplanation.trim();
+    $("experimentTitle").textContent = CONFIG.app.experimentTitle;
+    $("welcomeTitle").textContent = CONFIG.preliminary.welcomeTitle;
+    $("welcomeText").textContent = CONFIG.preliminary.welcomeText.trim();
+    $("kanseiExplanation").textContent = CONFIG.app.kanseiExplanation.trim();
+    $("videoButtonGuide").textContent = CONFIG.app.videoButtonGuide.trim();
   }
 
   function populateGroups() {
     const groupSelect = $("groupSelect");
     groupSelect.innerHTML = "";
-    Object.keys(CONFIG.groups).forEach((group) => {
+    Object.keys(CONFIG.videos.groups).forEach((group) => {
       const option = document.createElement("option");
       option.value = group;
       option.textContent = `Group ${group}`;
       groupSelect.appendChild(option);
     });
+  }
+
+  function showGeneratedParticipantId() {
+    $("generatedParticipantId").textContent = getOrCreateParticipantId();
   }
 
   function bindEvents() {
@@ -67,6 +84,10 @@
     $("videoPlayer").addEventListener("loadedmetadata", () => {
       $("videoFallback").classList.add("hidden");
     });
+
+    document.addEventListener("change", (event) => {
+      if (event.target.matches(".topic-rank-select")) updateTopicRankingOptions(event.target.closest(".topic-ranking"));
+    });
   }
 
   function checkSavedSession() {
@@ -74,22 +95,235 @@
     if (saved) $("resumeBtn").classList.remove("hidden");
   }
 
+  function renderPreliminaryQuestionnaire() {
+    const container = $("preliminaryFormContainer");
+    container.innerHTML = "";
+
+    CONFIG.preliminary.sections.forEach((section) => {
+      const sectionEl = document.createElement("section");
+      sectionEl.className = "prelim-section";
+      sectionEl.innerHTML = `
+        <div class="section-heading">
+          <h2>${escapeHtml(section.title)}</h2>
+          <p>${escapeHtml(section.description || "")}</p>
+        </div>
+      `;
+
+      const items = document.createElement("div");
+      items.className = "section-items";
+      section.questions.forEach((question) => items.appendChild(renderQuestion(section.id, question, "prelim")));
+      sectionEl.appendChild(items);
+      container.appendChild(sectionEl);
+    });
+
+    document.querySelectorAll(".topic-ranking").forEach(updateTopicRankingOptions);
+  }
+
+  function renderQuestion(sectionId, question, prefix, storedValue) {
+    const item = document.createElement("section");
+    item.className = "question-item";
+    item.dataset.questionId = question.id;
+    item.dataset.sectionId = sectionId;
+    const requiredMark = question.required ? " <span class='required'>*</span>" : "";
+    const baseName = `${prefix}_${sectionId}_${question.id}`;
+    const help = question.help ? `<p class="small-muted question-help">${escapeHtml(question.help)}</p>` : "";
+
+    if (question.type === "email" || question.type === "text") {
+      item.innerHTML = `
+        <label>
+          <strong>${escapeHtml(question.label)}</strong>${requiredMark}
+          ${help}
+          <input type="${question.type === "email" ? "email" : "text"}" name="${escapeHtml(baseName)}" placeholder="${escapeHtml(question.placeholder || "")}" value="${escapeHtml(storedValue || "")}" ${question.required ? "required" : ""}>
+        </label>
+      `;
+      return item;
+    }
+
+    if (question.type === "single_choice") {
+      item.innerHTML = `
+        <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
+        ${help}
+        <div class="choice-list" role="radiogroup">
+          ${question.options.map((option) => `
+            <label class="choice-with-other">
+              <input type="radio" name="${escapeHtml(baseName)}" value="${escapeHtml(option.value)}" ${storedValue === option.value ? "checked" : ""}>
+              <span>${escapeHtml(option.label)}</span>
+              ${option.allowText ? `<input class="other-text" type="text" name="${escapeHtml(baseName)}__other" placeholder="Please specify">` : ""}
+            </label>
+          `).join("")}
+        </div>
+      `;
+      return item;
+    }
+
+    if (question.type === "multi_choice") {
+      const selected = Array.isArray(storedValue) ? storedValue : [];
+      item.innerHTML = `
+        <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
+        ${help}
+        <div class="choice-list" role="group">
+          ${question.options.map((option) => `
+            <label class="choice-with-other">
+              <input type="checkbox" name="${escapeHtml(baseName)}" value="${escapeHtml(option.value)}" ${selected.includes(option.value) ? "checked" : ""}>
+              <span>${escapeHtml(option.label)}</span>
+              ${option.allowText ? `<input class="other-text" type="text" name="${escapeHtml(baseName)}__other" placeholder="Please specify">` : ""}
+            </label>
+          `).join("")}
+        </div>
+      `;
+      return item;
+    }
+
+    if (question.type === "rating_5") {
+      item.innerHTML = `
+        <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
+        ${help}
+        <div class="rating-five-row radio-row" role="radiogroup">
+          ${[1,2,3,4,5].map((score) => `
+            <label>
+              <input type="radio" name="${escapeHtml(baseName)}" value="${score}" ${Number(storedValue) === score ? "checked" : ""}>
+              <span>${score}</span>
+            </label>
+          `).join("")}
+        </div>
+        <div class="likert-labels"><span>${escapeHtml(question.minLabel || "Low")}</span><span>${escapeHtml(question.maxLabel || "High")}</span></div>
+      `;
+      return item;
+    }
+
+    if (question.type === "topic_ranking") {
+      item.classList.add("topic-ranking");
+      item.innerHTML = `
+        <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
+        ${help}
+        <div class="ranking-grid">
+          ${["1st", "2nd", "3rd"].map((rank, index) => `
+            <label>
+              ${rank} favorite topic
+              <select class="topic-rank-select" name="${escapeHtml(baseName)}_${index + 1}" data-rank-index="${index}">
+                <option value="">Please select</option>
+                ${question.options.map((option) => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join("")}
+              </select>
+            </label>
+          `).join("")}
+        </div>
+      `;
+      return item;
+    }
+
+    item.innerHTML = `<p>Unsupported question type: ${escapeHtml(question.type)}</p>`;
+    return item;
+  }
+
+  function updateTopicRankingOptions(container) {
+    if (!container) return;
+    const selects = [...container.querySelectorAll(".topic-rank-select")];
+    const selectedValues = selects.map((s) => s.value).filter(Boolean);
+    selects.forEach((select) => {
+      [...select.options].forEach((option) => {
+        if (!option.value) return;
+        option.disabled = selectedValues.includes(option.value) && option.value !== select.value;
+      });
+    });
+  }
+
+  function collectPreliminaryAnswers() {
+    const answers = {};
+    const missing = [];
+    const form = $("setupForm");
+
+    CONFIG.preliminary.sections.forEach((section) => {
+      section.questions.forEach((question) => {
+        const name = `prelim_${section.id}_${question.id}`;
+        const key = question.id;
+
+        if (question.type === "email" || question.type === "text") {
+          const input = form.querySelector(`[name="${cssEscape(name)}"]`);
+          const value = input ? input.value.trim() : "";
+          if (question.required && !value) missing.push(question.label);
+          answers[key] = value;
+        }
+
+        if (question.type === "single_choice") {
+          const selected = form.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+          if (!selected && question.required) missing.push(question.label);
+          if (selected) {
+            answers[key] = selected.value;
+            const option = question.options.find((opt) => opt.value === selected.value);
+            if (option?.allowText) {
+              const other = form.querySelector(`[name="${cssEscape(name + "__other")}"]`);
+              const otherValue = other ? other.value.trim() : "";
+              if (!otherValue) missing.push(`${question.label}: please specify Other`);
+              answers[`${key}_other`] = otherValue;
+            }
+          } else {
+            answers[key] = null;
+          }
+        }
+
+        if (question.type === "multi_choice") {
+          const selected = [...form.querySelectorAll(`input[name="${cssEscape(name)}"]:checked`)].map((input) => input.value);
+          if (question.required && selected.length === 0) missing.push(question.label);
+          answers[key] = selected;
+          const hasOther = selected.includes("other");
+          const other = form.querySelector(`[name="${cssEscape(name + "__other")}"]`);
+          const otherValue = other ? other.value.trim() : "";
+          if (hasOther && !otherValue) missing.push(`${question.label}: please specify Other`);
+          if (hasOther || otherValue) answers[`${key}_other`] = otherValue;
+        }
+
+        if (question.type === "rating_5") {
+          const selected = form.querySelector(`input[name="${cssEscape(name)}"]:checked`);
+          if (!selected && question.required) missing.push(question.label);
+          answers[key] = selected ? Number(selected.value) : null;
+        }
+
+        if (question.type === "topic_ranking") {
+          const values = [1,2,3].map((rank) => {
+            const select = form.querySelector(`[name="${cssEscape(name + "_" + rank)}"]`);
+            return select ? select.value : "";
+          });
+          const unique = new Set(values.filter(Boolean));
+          if (question.required && values.some((v) => !v)) missing.push(question.label);
+          if (unique.size !== values.filter(Boolean).length) missing.push("Please select each topic only once.");
+          answers[key] = values;
+        }
+      });
+    });
+
+    return { answers, missing };
+  }
+
   function onStartSurvey(event) {
     event.preventDefault();
-    const participantId = $("participantId").value.trim();
-    const email = $("participantEmail").value.trim();
+    removeValidationErrors($("setupForm"));
+
+    const participantId = getOrCreateParticipantId();
     const group = $("groupSelect").value;
+    const { answers, missing } = collectPreliminaryAnswers();
 
-    if (!participantId || !group) return;
+    if (answers.consent_agreement !== "agree") {
+      showValidationError($("setupForm"), "You must agree to participate voluntarily before starting the survey.");
+      return;
+    }
+    if (missing.length > 0) {
+      showValidationError($("setupForm"), `Please complete the preliminary questionnaire. Missing: ${missing.join(", ")}`);
+      return;
+    }
+    if (!group) {
+      showValidationError($("setupForm"), "Please select a group.");
+      return;
+    }
 
-    const groupVideos = CONFIG.groups[group] || [];
+    const groupVideos = CONFIG.videos.groups[group] || [];
     if (groupVideos.length === 0) {
-      alert("This group has no videos. Add videos in config.js first.");
+      alert("This group has no videos. Add videos in config/videos.config.js first.");
       return;
     }
 
     const now = new Date().toISOString();
-    state.participant = { participant_id: participantId, group, email };
+    state.participant = { participant_id: participantId, group, email: answers.email || "" };
+    state.preliminary_questionnaire = answers;
     state.session = {
       session_id: makeSessionId(participantId),
       started_at: now,
@@ -128,6 +362,7 @@
     return {
       video_id: video.id,
       video_title: video.title || video.id,
+      video_topic: video.topic || "",
       video_src: video.src,
       video_order_index: index + 1,
       evaluation_completed: false,
@@ -173,7 +408,7 @@
     const form = $("evaluationForm");
     form.innerHTML = "";
 
-    CONFIG.evaluationSections.forEach((section) => {
+    CONFIG.evaluation.sections.forEach((section) => {
       const sectionEl = document.createElement("section");
       sectionEl.className = "evaluation-section";
       sectionEl.innerHTML = `
@@ -214,40 +449,7 @@
         questionsWrap.className = "section-items";
         section.questions.forEach((question) => {
           const value = response.evaluation?.[section.id]?.[question.id];
-          const item = document.createElement("section");
-          item.className = "question-item";
-          const requiredMark = question.required ? " <span class='required'>*</span>" : "";
-
-          if (question.type === "single_choice") {
-            item.innerHTML = `
-              <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
-              <div class="choice-list" role="radiogroup">
-                ${question.options.map((option) => `
-                  <label>
-                    <input type="radio" name="eval_${escapeHtml(section.id)}_${escapeHtml(question.id)}" value="${escapeHtml(option.value)}" ${value === option.value ? "checked" : ""}>
-                    <span>${escapeHtml(option.label)}</span>
-                  </label>
-                `).join("")}
-              </div>
-            `;
-          }
-
-          if (question.type === "rating_5") {
-            item.innerHTML = `
-              <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
-              <div class="rating-five-row radio-row" role="radiogroup">
-                ${[1,2,3,4,5].map((score) => `
-                  <label>
-                    <input type="radio" name="eval_${escapeHtml(section.id)}_${escapeHtml(question.id)}" value="${score}" ${Number(value) === score ? "checked" : ""}>
-                    <span>${score}</span>
-                  </label>
-                `).join("")}
-              </div>
-              <div class="likert-labels"><span>${escapeHtml(question.minLabel || "Low")}</span><span>${escapeHtml(question.maxLabel || "High")}</span></div>
-            `;
-          }
-
-          questionsWrap.appendChild(item);
+          questionsWrap.appendChild(renderQuestion(section.id, question, "eval", value));
         });
         sectionEl.appendChild(questionsWrap);
       }
@@ -262,7 +464,7 @@
     const evaluation = {};
     const missing = [];
 
-    CONFIG.evaluationSections.forEach((section) => {
+    CONFIG.evaluation.sections.forEach((section) => {
       evaluation[section.id] = {};
 
       if (section.type === "kansei_pairs") {
@@ -279,9 +481,7 @@
           const name = `eval_${section.id}_${question.id}`;
           const selected = document.querySelector(`input[name="${cssEscape(name)}"]:checked`);
           if (!selected && question.required) missing.push(`${section.title}: ${question.label}`);
-          if (selected) {
-            evaluation[section.id][question.id] = question.type === "rating_5" ? Number(selected.value) : selected.value;
-          }
+          if (selected) evaluation[section.id][question.id] = question.type === "rating_5" ? Number(selected.value) : selected.value;
         });
       }
     });
@@ -359,7 +559,7 @@
       const row = document.createElement("div");
       row.className = "review-row";
       row.innerHTML = `
-        <div><strong>${index + 1}. Video ${escapeHtml(video.id)}</strong><div class="small-muted">${escapeHtml(video.title || video.id)}</div></div>
+        <div><strong>${index + 1}. Video ${escapeHtml(video.id)}</strong><div class="small-muted">${escapeHtml(video.title || video.id)}${video.topic ? ` · ${escapeHtml(video.topic)}` : ""}</div></div>
         <span class="badge ${complete ? "complete" : "incomplete"}">${complete ? "Complete" : "Incomplete"}</span>
       `;
       row.addEventListener("click", () => {
@@ -372,28 +572,33 @@
   }
 
   function buildExportObject() {
+    const suggestedFilename = `${safeFileName(state.participant.participant_id)}.json`;
     return {
+      suggested_filename: suggestedFilename,
       experiment: {
-        title: CONFIG.experimentTitle,
-        version: CONFIG.experimentVersion,
+        title: CONFIG.app.experimentTitle,
+        version: CONFIG.app.experimentVersion,
         scale: "7-point bipolar Kansei sections stored as integers from -3 to +3; participant-facing form hides numeric labels"
       },
       participant: state.participant,
+      preliminary_questionnaire: state.preliminary_questionnaire,
       session: {
         ...state.session,
         completed_at: state.completedAt,
         video_count: state.videos.length,
         interface: "mobile-first short-form video screen with one multi-part evaluation form"
       },
-      evaluation_sections: CONFIG.evaluationSections,
+      config_snapshot: {
+        preliminary_sections: CONFIG.preliminary.sections,
+        evaluation_sections: CONFIG.evaluation.sections
+      },
       responses: state.videos.map((video) => state.responses[video.id])
     };
   }
 
   function exportJson() {
     const data = buildExportObject();
-    const filename = `${safeFileName(state.participant.participant_id)}_${state.participant.group}_${state.session.session_id}.json`;
-    downloadFile(filename, JSON.stringify(data, null, 2), "application/json");
+    downloadFile(data.suggested_filename, JSON.stringify(data, null, 2), "application/json");
   }
 
   async function submitResults() {
@@ -408,9 +613,9 @@
       return;
     }
 
-    const endpoint = (CONFIG.submitEndpoint || "").trim();
+    const endpoint = (CONFIG.app.submitEndpoint || "").trim();
     if (!endpoint) {
-      status.textContent = "No submit endpoint is configured. Please set CONFIG.submitEndpoint in config.js, or use Export JSON as a backup.";
+      status.textContent = "No submit endpoint is configured. Please set submitEndpoint in config/app.config.js, or use Export JSON as a backup.";
       status.classList.add("error");
       return;
     }
@@ -448,9 +653,10 @@
   }
 
   function resetSession() {
-    const ok = confirm("Reset the current session? Submit or export your data first if you need it.");
+    const ok = confirm("Reset the current session? Submit or export your data first if you need it. A new participant ID will be generated.");
     if (!ok) return;
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(SETUP_ID_KEY);
     location.reload();
   }
 
@@ -504,11 +710,27 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
+  function getOrCreateParticipantId() {
+    const saved = localStorage.getItem(SETUP_ID_KEY);
+    if (saved) return saved;
+    const id = makeParticipantId();
+    localStorage.setItem(SETUP_ID_KEY, id);
+    return id;
+  }
+
+  function makeParticipantId() {
+    const prefix = CONFIG.app.participantIdPrefix || "P";
+    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 14);
+    const random = Math.random().toString(36).slice(2, 8).toUpperCase();
+    return `${prefix}-${stamp}-${random}`;
+  }
+
   function showValidationError(container, message) {
     const error = document.createElement("div");
     error.className = "validation-error";
     error.textContent = message;
     container.prepend(error);
+    error.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function removeValidationErrors(container) {
@@ -524,7 +746,8 @@
   }
 
   function makeSessionId(participantId) {
-    return `${safeFileName(participantId)}_${new Date().toISOString().replace(/[:.]/g, "-")}`;
+    const prefix = CONFIG.app.sessionIdPrefix || "S";
+    return `${prefix}-${safeFileName(participantId)}-${new Date().toISOString().replace(/[:.]/g, "-")}`;
   }
 
   function safeFileName(value) {
