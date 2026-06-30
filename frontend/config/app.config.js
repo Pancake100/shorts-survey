@@ -5,8 +5,8 @@ const APP_CONFIG = {
 
   // API endpoint used by the Submit button.
   // The app will POST the final JSON payload to this URL.
-  // Example: "https://example.com/api/survey-submit"
-  submitEndpoint: "",
+  // Example: "https://example.com/api/submit"
+  submitEndpoint: "http://127.0.0.1:8000/api/submit",
 
   participantIdPrefix: "P",
   sessionIdPrefix: "S",
