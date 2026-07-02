@@ -491,22 +491,42 @@ textarea { min-height: 88px; resize: vertical; }
   margin-top: 12px;
 }
 
-.choice-list label {
+.choice-option {
   display: grid;
-  grid-template-columns: 24px 1fr;
-  align-items: center;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 10px 12px;
   background: #fff;
-  font-weight: 650;
 }
 
-.choice-list input {
+.choice-line {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.choice-line label {
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.choice-line input[type="radio"],
+.choice-line input[type="checkbox"] {
   width: 20px;
   height: 20px;
   accent-color: var(--primary);
+}
+
+.choice-list input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: #fff;
 }
 
 .rating-five-row {
@@ -523,7 +543,7 @@ textarea { min-height: 88px; resize: vertical; }
   .evaluation-section { padding: 12px; }
   .section-heading h3 { font-size: 1rem; }
   .section-heading p { font-size: .86rem; }
-  .choice-list label { padding: 10px; }
+  .choice-option { padding: 10px; }
 }
 
 /* v9 preliminary questionnaire and split-config additions */
@@ -564,8 +584,11 @@ textarea { min-height: 88px; resize: vertical; }
 }
 .question-help { margin: 6px 0 0; }
 .choice-with-other .other-text {
-  grid-column: 2 / -1;
-  margin-top: 4px;
+  margin-left: 34px;
+}
+
+@media (max-width: 560px) {
+  .choice-with-other .other-text { margin-left: 0; }
 }
 .ranking-grid {
   display: grid;
@@ -579,4 +602,70 @@ textarea { min-height: 88px; resize: vertical; }
   .prelim-section { padding: 12px; }
   .generated-id-box { display: grid; }
   .generated-id-box strong { text-align: left; }
+}
+
+
+/* v9.2 fix: prevent preliminary questionnaire text inputs from overflowing */
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* Keep regular text inputs responsive without escaping their parent */
+.preliminary-form input[type="text"],
+.preliminary-form input[type="email"],
+.preliminary-form select,
+.preliminary-form textarea,
+.prelim-form input[type="text"],
+.prelim-form input[type="email"],
+.prelim-form select,
+.prelim-form textarea,
+#preliminaryScreen input[type="text"],
+#preliminaryScreen input[type="email"],
+#preliminaryScreen select,
+#preliminaryScreen textarea {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* The "Other" text field should fill the remaining row space, not the full page width */
+.choice-with-other,
+.option-with-other,
+.other-option,
+.other-choice {
+  width: 100%;
+  max-width: 100%;
+}
+
+.choice-with-other input[type="text"],
+.option-with-other input[type="text"],
+.other-option input[type="text"],
+.other-choice input[type="text"] {
+  flex: 1 1 12rem;
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+}
+
+/* If an Other field sits inside a flex row, allow the row to wrap instead of overflowing */
+.choice-with-other,
+.option-with-other,
+.other-option,
+.other-choice,
+.choice-row,
+.option-row {
+  flex-wrap: wrap;
+}
+
+/* Radio and checkbox controls should never inherit full-width text-input sizing */
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto;
+  max-width: none;
+  flex: 0 0 auto;
 }

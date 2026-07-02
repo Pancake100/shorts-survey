@@ -165,3 +165,23 @@ http://localhost:8000
 No videos are included in this ZIP. Add your own MP4 files to the video folders and update `config/videos.config.js`.
 
 For research use, make sure the lab has appropriate permission or rights to use and redistribute the video files in the experiment.
+
+## v9.1 targeted preliminary form fix
+
+This package keeps the v9 single-page structure, but fixes the preliminary questionnaire "Other" text fields.
+
+Changes:
+
+- Radio/checkbox controls and their labels are now rendered as siblings using `id` and `for`.
+- The "Other" text input is no longer nested inside the option label.
+- CSS now targets radio/checkbox controls and text inputs separately.
+- Focusing an "Other" text field automatically selects/checks the related option.
+
+The larger multi-page restructuring discussed for maintainability is not included in this targeted fix.
+
+
+## v9.2 overflow fix
+
+- Fixed preliminary questionnaire `Other` text fields overflowing their container.
+- Added safer `box-sizing: border-box` handling for form controls.
+- Kept radio/checkbox sizing separate from text/email/select controls.

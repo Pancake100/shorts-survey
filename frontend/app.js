@@ -88,6 +88,13 @@
     document.addEventListener("change", (event) => {
       if (event.target.matches(".topic-rank-select")) updateTopicRankingOptions(event.target.closest(".topic-ranking"));
     });
+
+    document.addEventListener("focusin", (event) => {
+      if (!event.target.matches(".other-text")) return;
+      const option = event.target.closest(".choice-with-other");
+      const choiceInput = option?.querySelector('input[type="radio"], input[type="checkbox"]');
+      if (choiceInput && !choiceInput.checked) choiceInput.checked = true;
+    });
   }
 
   function checkSavedSession() {
@@ -144,13 +151,19 @@
         <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
         ${help}
         <div class="choice-list" role="radiogroup">
-          ${question.options.map((option) => `
-            <label class="choice-with-other">
-              <input type="radio" name="${escapeHtml(baseName)}" value="${escapeHtml(option.value)}" ${storedValue === option.value ? "checked" : ""}>
-              <span>${escapeHtml(option.label)}</span>
-              ${option.allowText ? `<input class="other-text" type="text" name="${escapeHtml(baseName)}__other" placeholder="Please specify">` : ""}
-            </label>
-          `).join("")}
+          ${question.options.map((option, index) => {
+            const optionId = `${baseName}_${option.value}_${index}`;
+            const checked = storedValue === option.value ? "checked" : "";
+            return `
+              <div class="choice-option ${option.allowText ? "choice-with-other" : ""}">
+                <div class="choice-line">
+                  <input id="${escapeHtml(optionId)}" type="radio" name="${escapeHtml(baseName)}" value="${escapeHtml(option.value)}" ${checked}>
+                  <label for="${escapeHtml(optionId)}">${escapeHtml(option.label)}</label>
+                </div>
+                ${option.allowText ? `<input class="other-text" id="${escapeHtml(optionId)}_text" type="text" name="${escapeHtml(baseName)}__other" placeholder="Please specify" autocomplete="off">` : ""}
+              </div>
+            `;
+          }).join("")}
         </div>
       `;
       return item;
@@ -162,13 +175,19 @@
         <div><strong>${escapeHtml(question.label)}</strong>${requiredMark}</div>
         ${help}
         <div class="choice-list" role="group">
-          ${question.options.map((option) => `
-            <label class="choice-with-other">
-              <input type="checkbox" name="${escapeHtml(baseName)}" value="${escapeHtml(option.value)}" ${selected.includes(option.value) ? "checked" : ""}>
-              <span>${escapeHtml(option.label)}</span>
-              ${option.allowText ? `<input class="other-text" type="text" name="${escapeHtml(baseName)}__other" placeholder="Please specify">` : ""}
-            </label>
-          `).join("")}
+          ${question.options.map((option, index) => {
+            const optionId = `${baseName}_${option.value}_${index}`;
+            const checked = selected.includes(option.value) ? "checked" : "";
+            return `
+              <div class="choice-option ${option.allowText ? "choice-with-other" : ""}">
+                <div class="choice-line">
+                  <input id="${escapeHtml(optionId)}" type="checkbox" name="${escapeHtml(baseName)}" value="${escapeHtml(option.value)}" ${checked}>
+                  <label for="${escapeHtml(optionId)}">${escapeHtml(option.label)}</label>
+                </div>
+                ${option.allowText ? `<input class="other-text" id="${escapeHtml(optionId)}_text" type="text" name="${escapeHtml(baseName)}__other" placeholder="Please specify" autocomplete="off">` : ""}
+              </div>
+            `;
+          }).join("")}
         </div>
       `;
       return item;
