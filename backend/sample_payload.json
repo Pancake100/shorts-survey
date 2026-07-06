@@ -1,19 +1,7 @@
 {
-  "experiment": {
-    "title": "Short-Form Educational Video Evaluation",
-    "version": "1.0"
-  },
-  "participant": {
-    "participant_id": "P-TEST-001",
-    "email": "",
-    "group": "A"
-  },
-  "preliminary_questionnaire": {
-    "consent": "agree"
-  },
-  "session": {
-    "session_id": "S-TEST-001",
-    "video_order": ["A01", "A02"]
-  },
+  "experiment": {"title": "Short-Form Educational Video Evaluation", "version": "1.0"},
+  "participant": {"participant_id": "P-TEST-001", "email": "", "group": "A"},
+  "preliminary_questionnaire": {"consent": "agree"},
+  "session": {"session_id": "S-TEST-001", "video_order": ["A01", "A02"]},
   "responses": []
 }
