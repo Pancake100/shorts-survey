@@ -185,3 +185,32 @@ The larger multi-page restructuring discussed for maintainability is not include
 - Fixed preliminary questionnaire `Other` text fields overflowing their container.
 - Added safer `box-sizing: border-box` handling for form controls.
 - Kept radio/checkbox sizing separate from text/email/select controls.
+
+
+## v10 backend-managed group assignment
+
+This version expects the FastAPI backend v2 session flow.
+
+New frontend behavior:
+
+- The participant ID is no longer generated in the browser.
+- The video group is no longer manually selected by the participant.
+- On a fresh start, the app calls `startSessionEndpoint`.
+- The backend returns `participant_id`, `group`, and `group_label`.
+- The assigned group is saved in `localStorage` and reused on page reload/resume.
+- A URL override such as `?group=B` is passed to the backend only when starting a fresh session.
+- Existing saved sessions are not automatically overridden by the URL parameter.
+
+Configure endpoints in `config/app.config.js`:
+
+```js
+startSessionEndpoint: "/survey/api/start-session",
+submitEndpoint: "/survey/api/submit"
+```
+
+For local testing with the backend running directly:
+
+```js
+startSessionEndpoint: "http://127.0.0.1:8000/api/start-session",
+submitEndpoint: "http://127.0.0.1:8000/api/submit"
+```

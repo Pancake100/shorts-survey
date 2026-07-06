@@ -39,16 +39,17 @@
           <section class="prelim-section session-section">
             <div class="section-heading">
               <h2>Session Setup</h2>
-              <p>Your participant ID is generated automatically and will be used as the filename on the server.</p>
+              <p>Your participant ID and video group will be assigned automatically by the survey server when you start.</p>
             </div>
             <div class="generated-id-box">
               <span>Participant ID</span>
-              <strong id="generatedParticipantId">-</strong>
+              <strong id="generatedParticipantId">Assigned on start</strong>
             </div>
-            <label>
-              Group <span class="required">*</span>
-              <select id="groupSelect" name="groupSelect" required></select>
-            </label>
+            <div class="generated-id-box">
+              <span>Video group</span>
+              <strong id="assignedGroupLabel">Assigned automatically</strong>
+            </div>
+            <p id="urlGroupOverrideNotice" class="small-note hidden"></p>
           </section>
 
           <div id="preliminaryFormContainer" class="preliminary-form"></div>
@@ -145,7 +146,7 @@
         <div><span>Email</span><strong id="settingsEmail">-</strong></div>
         <div><span>Progress</span><strong id="settingsProgress">-</strong></div>
       </div>
-      <p class="small-note">Restart clears the current saved session on this device and generates a new participant ID. Finish opens the review and submit screen.</p>
+      <p class="small-note">Restart clears the current saved session on this device and requests a new participant ID and group assignment from the server. Finish opens the review and submit screen.</p>
     </div>
     <div class="sheet-footer stacked-footer">
       <button id="settingsFinishBtn" type="button" class="primary-btn full">Finish / Submit</button>

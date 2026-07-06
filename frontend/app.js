@@ -1,6 +1,5 @@
 (() => {
-  const STORAGE_KEY = "kansei_video_survey_v9_session";
-  const SETUP_ID_KEY = "kansei_video_survey_v9_participant_id";
+  const STORAGE_KEY = "kansei_video_survey_v10_session";
   const SCALE_VALUES = [-3, -2, -1, 0, 1, 2, 3];
 
   const CONFIG = {
@@ -26,9 +25,8 @@
 
   function init() {
     hydrateStaticText();
-    populateGroups();
     renderPreliminaryQuestionnaire();
-    showGeneratedParticipantId();
+    showSessionAssignmentPlaceholders();
     bindEvents();
     checkSavedSession();
   }
@@ -41,19 +39,24 @@
     $("videoButtonGuide").textContent = CONFIG.app.videoButtonGuide.trim();
   }
 
-  function populateGroups() {
-    const groupSelect = $("groupSelect");
-    groupSelect.innerHTML = "";
-    Object.keys(CONFIG.videos.groups).forEach((group) => {
-      const option = document.createElement("option");
-      option.value = group;
-      option.textContent = `Group ${group}`;
-      groupSelect.appendChild(option);
-    });
-  }
+  function showSessionAssignmentPlaceholders() {
+    const overrideGroup = getGroupOverrideFromUrl();
+    $("generatedParticipantId").textContent = "Assigned on start";
+    $("assignedGroupLabel").textContent = overrideGroup ? `Will request Group ${overrideGroup}` : "Assigned automatically";
+    const notice = $("urlGroupOverrideNotice");
+    if (overrideGroup) {
+      notice.textContent = `This link requests assignment to Group ${overrideGroup}. The server will validate the group when the survey starts.`;
+      notice.classList.remove("hidden");
+    } else {
+      notice.textContent = "";
+      notice.classList.add("hidden");
+    }
 
-  function showGeneratedParticipantId() {
-    $("generatedParticipantId").textContent = getOrCreateParticipantId();
+    const saved = loadSavedState();
+    if (saved?.participant) {
+      $("generatedParticipantId").textContent = saved.participant.participant_id || "Assigned";
+      $("assignedGroupLabel").textContent = saved.participant.group_label || (saved.participant.group ? `Group ${saved.participant.group}` : "Assigned");
+    }
   }
 
   function bindEvents() {
@@ -98,8 +101,14 @@
   }
 
   function checkSavedSession() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) $("resumeBtn").classList.remove("hidden");
+    const saved = loadSavedState();
+    if (saved) {
+      $("resumeBtn").classList.remove("hidden");
+      if (saved.participant) {
+        $("generatedParticipantId").textContent = saved.participant.participant_id || "Assigned";
+        $("assignedGroupLabel").textContent = saved.participant.group_label || (saved.participant.group ? `Group ${saved.participant.group}` : "Assigned");
+      }
+    }
   }
 
   function renderPreliminaryQuestionnaire() {
@@ -313,12 +322,10 @@
     return { answers, missing };
   }
 
-  function onStartSurvey(event) {
+  async function onStartSurvey(event) {
     event.preventDefault();
     removeValidationErrors($("setupForm"));
 
-    const participantId = getOrCreateParticipantId();
-    const group = $("groupSelect").value;
     const { answers, missing } = collectPreliminaryAnswers();
 
     if (answers.consent_agreement !== "agree") {
@@ -329,52 +336,125 @@
       showValidationError($("setupForm"), `Please complete the preliminary questionnaire. Missing: ${missing.join(", ")}`);
       return;
     }
-    if (!group) {
-      showValidationError($("setupForm"), "Please select a group.");
-      return;
-    }
 
-    const groupVideos = CONFIG.videos.groups[group] || [];
-    if (groupVideos.length === 0) {
-      alert("This group has no videos. Add videos in config/videos.config.js first.");
-      return;
-    }
+    const submitButton = $("setupForm").querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.textContent;
 
-    const now = new Date().toISOString();
-    state.participant = { participant_id: participantId, group, email: answers.email || "" };
-    state.preliminary_questionnaire = answers;
-    state.session = {
-      session_id: makeSessionId(participantId),
-      started_at: now,
-      video_order: []
-    };
-    state.videos = shuffle([...groupVideos]);
-    state.session.video_order = state.videos.map((video) => video.id);
-    state.currentIndex = 0;
-    state.responses = {};
-    state.completedAt = null;
-
-    state.videos.forEach((video, index) => {
-      state.responses[video.id] = createEmptyResponse(video, index);
-    });
-
-    saveState();
-    renderCurrentVideo();
-    showScreen("survey");
-  }
-
-  function resumeSavedSession() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
     try {
-      const parsed = JSON.parse(saved);
-      Object.assign(state, parsed);
+      submitButton.disabled = true;
+      submitButton.textContent = "Starting...";
+
+      const sessionInfo = await requestServerSession();
+      const group = sessionInfo.group;
+      const groupLabel = sessionInfo.group_label || `Group ${group}`;
+      const participantId = sessionInfo.participant_id;
+
+      const groupVideos = CONFIG.videos.groups[group] || [];
+      if (groupVideos.length === 0) {
+        throw new Error(`The assigned group (${groupLabel}) has no videos. Check config/videos.config.js.`);
+      }
+
+      const now = new Date().toISOString();
+      state.participant = {
+        participant_id: participantId,
+        group,
+        group_label: groupLabel,
+        email: answers.email || "",
+        assignment_method: sessionInfo.assignment_method || "",
+        assigned_at: sessionInfo.assigned_at || now,
+        assignment_expires_at: sessionInfo.assignment_expires_at || ""
+      };
+      state.preliminary_questionnaire = answers;
+      state.session = {
+        session_id: makeSessionId(participantId),
+        started_at: now,
+        video_order: [],
+        assignment_stats_at_start: sessionInfo.stats || null
+      };
+      state.videos = shuffle([...groupVideos]);
+      state.session.video_order = state.videos.map((video) => video.id);
+      state.currentIndex = 0;
+      state.responses = {};
+      state.completedAt = null;
+
+      state.videos.forEach((video, index) => {
+        state.responses[video.id] = createEmptyResponse(video, index);
+      });
+
+      saveState();
       renderCurrentVideo();
       showScreen("survey");
     } catch (error) {
       console.error(error);
-      alert("Could not resume saved session. The saved data may be corrupted.");
+      showValidationError($("setupForm"), `Could not start the survey: ${error.message}`);
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalButtonText;
     }
+  }
+
+  function resumeSavedSession() {
+    const parsed = loadSavedState();
+    if (!parsed) return;
+    Object.assign(state, parsed);
+    renderCurrentVideo();
+    showScreen("survey");
+  }
+
+  function loadSavedState() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved);
+    } catch (error) {
+      console.error(error);
+      alert("Could not read saved session. The saved data may be corrupted.");
+      return null;
+    }
+  }
+
+  async function requestServerSession() {
+    const endpoint = (CONFIG.app.startSessionEndpoint || "").trim();
+    if (!endpoint) {
+      throw new Error("No start session endpoint is configured. Please set startSessionEndpoint in config/app.config.js.");
+    }
+
+    const overrideGroup = getGroupOverrideFromUrl();
+    const url = new URL(endpoint, window.location.href);
+    if (overrideGroup) url.searchParams.set("group", overrideGroup);
+
+    const response = await fetch(url.toString(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    let body = null;
+    const responseText = await response.text();
+    if (responseText) {
+      try {
+        body = JSON.parse(responseText);
+      } catch {
+        body = { detail: responseText };
+      }
+    }
+
+    if (!response.ok) {
+      const detail = body?.detail || `Server returned ${response.status}`;
+      throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+    }
+
+    if (!body?.participant_id || !body?.group) {
+      throw new Error("The server response did not include participant_id and group.");
+    }
+
+    return body;
+  }
+
+  function getGroupOverrideFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get("group");
+    if (!raw) return "";
+    return raw.trim().toUpperCase();
   }
 
   function createEmptyResponse(video, index) {
@@ -675,14 +755,13 @@
     const ok = confirm("Reset the current session? Submit or export your data first if you need it. A new participant ID will be generated.");
     if (!ok) return;
     localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(SETUP_ID_KEY);
     location.reload();
   }
 
   function openSettings() {
     const completed = Object.values(state.responses).filter((r) => r.evaluation_completed).length;
     $("settingsParticipantId").textContent = state.participant?.participant_id || "-";
-    $("settingsGroup").textContent = state.participant?.group ? `Group ${state.participant.group}` : "-";
+    $("settingsGroup").textContent = state.participant?.group_label || (state.participant?.group ? `Group ${state.participant.group}` : "-");
     $("settingsEmail").textContent = state.participant?.email || "Not provided";
     $("settingsProgress").textContent = `${completed}/${state.videos.length} completed`;
     openModal("settingsModal");
@@ -729,20 +808,6 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  function getOrCreateParticipantId() {
-    const saved = localStorage.getItem(SETUP_ID_KEY);
-    if (saved) return saved;
-    const id = makeParticipantId();
-    localStorage.setItem(SETUP_ID_KEY, id);
-    return id;
-  }
-
-  function makeParticipantId() {
-    const prefix = CONFIG.app.participantIdPrefix || "P";
-    const stamp = new Date().toISOString().replace(/[-:T.Z]/g, "").slice(0, 14);
-    const random = Math.random().toString(36).slice(2, 8).toUpperCase();
-    return `${prefix}-${stamp}-${random}`;
-  }
 
   function showValidationError(container, message) {
     const error = document.createElement("div");

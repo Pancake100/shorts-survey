@@ -669,3 +669,9 @@ input[type="checkbox"] {
   max-width: none;
   flex: 0 0 auto;
 }
+
+
+/* v10 session assignment display */
+.generated-id-box strong {
+  overflow-wrap: anywhere;
+}

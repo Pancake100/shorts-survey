@@ -1,18 +1,25 @@
 /* General app and API settings. */
 const APP_CONFIG = {
   experimentTitle: "Short-Form Educational Video Evaluation",
-  experimentVersion: "4.0-preliminary-questionnaire",
+  experimentVersion: "5.0-backend-managed-assignment",
+
+  // API endpoint used to start a new server-managed survey session.
+  // The backend generates the participant ID and assigns the video group.
+  // Example for same-origin deployment: "/survey/api/start-session"
+  // Example for local backend testing: "http://127.0.0.1:8000/api/start-session"
+  startSessionEndpoint: "",
 
   // API endpoint used by the Submit button.
   // The app will POST the final JSON payload to this URL.
-  // Example: "https://example.com/api/survey-submit"
+  // Example for same-origin deployment: "/survey/api/submit"
+  // Example for local backend testing: "http://127.0.0.1:8000/api/submit"
   submitEndpoint: "",
 
-  participantIdPrefix: "P",
   sessionIdPrefix: "S",
 
   instructions: `
     You will watch a set of short-form educational videos and evaluate your impression of each video.
+    Your participant ID and video group are assigned automatically when you start the survey.
     For each video, tap the heart button to open one evaluation form.
     You may go back to previous videos and change your answers before submitting your result.
   `,
