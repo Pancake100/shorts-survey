@@ -1,0 +1,11 @@
+{
+  "participant_id": "P-20260707T062544Z-DFBC50",
+  "group": "A",
+  "group_label": "Group A",
+  "assigned_at": "2026-07-07T06:25:44+00:00",
+  "assignment_expires_at": "2026-07-08T06:25:44+00:00",
+  "assignment_method": "least_weighted_count",
+  "status": "assigned",
+  "completed_at": null,
+  "submitted_filename": null
+}

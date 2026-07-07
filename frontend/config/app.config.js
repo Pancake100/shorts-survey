@@ -7,13 +7,13 @@ const APP_CONFIG = {
   // The backend generates the participant ID and assigns the video group.
   // Example for same-origin deployment: "/survey/api/start-session"
   // Example for local backend testing: "http://127.0.0.1:8000/api/start-session"
-  startSessionEndpoint: "http://127.0.0.1:8000/api/start-session",
+  startSessionEndpoint: "http://172.23.96.191:8000/api/start-session",
 
   // API endpoint used by the Submit button.
   // The app will POST the final JSON payload to this URL.
   // Example for same-origin deployment: "/survey/api/submit"
   // Example for local backend testing: "http://127.0.0.1:8000/api/submit"
-  submitEndpoint: "http://127.0.0.1:8000/api/submit",
+  submitEndpoint: "http://172.23.96.191:8000/api/submit",
 
   sessionIdPrefix: "S",
 

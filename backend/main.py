@@ -23,7 +23,7 @@ UNKNOWN_DIR = DATA_DIR / "unknown"
 ACTIVE_ASSIGNMENT_WEIGHT = float(os.getenv("ACTIVE_ASSIGNMENT_WEIGHT", "0.5"))
 ASSIGNMENT_EXPIRATION_HOURS = float(os.getenv("ASSIGNMENT_EXPIRATION_HOURS", "24"))
 
-allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000")
+allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://172.23.96.191:3000")
 ALLOWED_ORIGINS = [origin.strip() for origin in allowed_origins_raw.split(",") if origin.strip()]
 
 app = FastAPI(

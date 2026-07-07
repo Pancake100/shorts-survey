@@ -1,1 +1,0 @@
-Put local MP4 video files in this folder and update config.js accordingly.
