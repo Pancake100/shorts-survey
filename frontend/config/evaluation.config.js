@@ -7,11 +7,11 @@ const EVALUATION_CONFIG = {
       description: "This section asks about your impressions of the video's visual presentation, including the layout, graphics, colors, subtitles, animations, and overall appearance. Please evaluate how the video looks based on your personal feelings.",
       type: "kansei_pairs",
       pairs: [
-        { id: "attractive_unattractive", left: "Attractive", right: "Unattractive" },
+        { id: "attractive_plain", left: "Attractive", right: "Plain" },
         { id: "clear_confusing", left: "Clear", right: "Confusing" },
         { id: "organized_disorganized", left: "Organized", right: "Disorganized" },
         { id: "comfortable_uncomfortable", left: "Comfortable", right: "Uncomfortable" },
-        { id: "eye_catching_plain", left: "Eye-catching", right: "Plain" }
+        { id: "coherent_scattered", left: "Coherent", right: "Scattered" }
       ]
     },
     {
@@ -21,41 +21,28 @@ const EVALUATION_CONFIG = {
       type: "kansei_pairs",
       pairs: [
         { id: "professional_amateur", left: "Professional", right: "Amateur" },
-        { id: "easy_to_understand_difficult_to_understand", left: "Easy to understand", right: "Difficult to understand" },
+        { id: "understandable_confusing", left: "Understandable", right: "Confusing" },
         { id: "interesting_boring", left: "Interesting", right: "Boring" },
-        { id: "useful_useless", left: "Useful", right: "Useless" },
-        { id: "memorable_forgettable", left: "Memorable", right: "Forgettable" }
+        { id: "factual_misleading", left: "Factual", right: "Misleading" },
+        { id: "convincing_doubtful", left: "Convincing", right: "Doubtful" }
       ]
     },
     {
       id: "audio_impression",
-      title: "Part C: Audio Impression",
-      description: "This section asks about your impressions of the audio elements in the video, including background music, sound effects, volume balance, and overall listening experience.",
+      title: "Part C: Audio and Narrator Impression",
+      description: "This section asks about your impressions of the video's audio and narrator, including the narrator's voice, background music, sound effects, clarity, and the overall listening experience. Please evaluate the audio/narrator based on your feelings.",
       type: "kansei_pairs",
       pairs: [
-        { id: "pleasant_unpleasant", left: "Pleasant", right: "Unpleasant" },
+        { id: "pleasant_unpleasant", left: "Pleasant", right: "Annoying" },
         { id: "clear_unclear", left: "Clear", right: "Unclear" },
         { id: "smooth_abrupt", left: "Smooth", right: "Abrupt" },
-        { id: "immersive_distracting", left: "Immersive", right: "Distracting" },
+        { id: "friendly_unfriendly", left: "Friendly", right: "Unfriendly" },
         { id: "motivating_demotivating", left: "Motivating", right: "Demotivating" }
       ]
     },
     {
-      id: "voice_narrator_impression",
-      title: "Part D: Voice / Narrator Impression",
-      description: "This section asks about your impressions of the narrator's voice, including speaking style, pronunciation, confidence, friendliness, and clarity.",
-      type: "kansei_pairs",
-      pairs: [
-        { id: "friendly_unfriendly", left: "Friendly", right: "Unfriendly" },
-        { id: "natural_artificial", left: "Natural", right: "Artificial" },
-        { id: "clear_unclear", left: "Clear", right: "Unclear" },
-        { id: "confident_hesitant", left: "Confident", right: "Hesitant" },
-        { id: "pleasant_unpleasant", left: "Pleasant", right: "Unpleasant" }
-      ]
-    },
-    {
       id: "overall_evaluation",
-      title: "Part E: Overall Evaluation",
+      title: "Part D: Overall Evaluation",
       description: "This section asks about your overall experience with the video, including your willingness to continue watching, the likelihood of remembering the information, and your general evaluation of the video.",
       type: "questions",
       questions: [
