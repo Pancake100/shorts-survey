@@ -214,3 +214,10 @@ For local testing with the backend running directly:
 startSessionEndpoint: "http://127.0.0.1:8000/api/start-session",
 submitEndpoint: "http://127.0.0.1:8000/api/submit"
 ```
+
+
+## v10.1 preliminary questionnaire update
+
+- Changed the final language question to: “How comfortable are you with English?”
+- Removed the earphones/headphones question as a collected data item.
+- Added a pre-start instruction asking participants to make sure they can clearly see and hear the videos on their device.

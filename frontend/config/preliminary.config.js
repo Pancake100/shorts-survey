@@ -241,31 +241,21 @@ const PRELIMINARY_CONFIG = {
       ]
     },
     {
-      id: "language_and_audio_condition",
-      title: "Video Language and Audio Condition",
-      description: "These questions help interpret your evaluation of the educational videos, especially audio, voice, and content clarity.",
+      id: "english_comfort",
+      title: "English Comfort",
+      description: "This question helps interpret your evaluation of the educational videos, especially content clarity, audio, and narration.",
       questions: [
         {
-          id: "video_language_comprehension",
-          label: "How well do you understand the language used in the videos?",
+          id: "english_comfort_level",
+          label: "How comfortable are you with English?",
           type: "single_choice",
           required: true,
           options: [
-            { value: "very_poorly", label: "Very poorly" },
-            { value: "poorly", label: "Poorly" },
-            { value: "moderately", label: "Moderately" },
-            { value: "well", label: "Well" },
-            { value: "very_well", label: "Very well" }
-          ]
-        },
-        {
-          id: "uses_earphones",
-          label: "Will you use earphones/headphones during the experiment?",
-          type: "single_choice",
-          required: true,
-          options: [
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No" }
+            { value: "not_comfortable_at_all", label: "Not comfortable at all" },
+            { value: "slightly_comfortable", label: "Slightly comfortable" },
+            { value: "moderately_comfortable", label: "Moderately comfortable" },
+            { value: "comfortable", label: "Comfortable" },
+            { value: "very_comfortable", label: "Very comfortable" }
           ]
         }
       ]
