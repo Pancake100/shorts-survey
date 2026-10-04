@@ -1,0 +1,109 @@
+participant_id,group,video_id,video_title,topic,video_order,attractive_plain,clear_confusing,organized_disorganized,comfortable_uncomfortable,coherent_scattered,professional_amateur,understandable_confusing,interesting_boring,factual_misleading,convincing_doubtful,pleasant_unpleasant,clear_unclear,smooth_abrupt,friendly_unfriendly,motivating_demotivating,stopping_or_skipping,first_bored_or_skip_point,overall_rating
+P-20260711T030347Z-C30B56,B,S02,Video B07,Science,1,-1,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,slightly,early_middle,5
+P-20260711T030347Z-C30B56,B,H04,Video B05,History,2,-3,-3,-3,-3,-3,-2,-3,-1,-1,-3,-3,-3,-3,-1,-2,slightly,late_middle,4
+P-20260711T030347Z-C30B56,B,L03,Video B06,Language Learning,3,-1,-3,-3,-3,-3,-3,-3,-1,-3,-3,-3,-3,-3,-2,-3,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260711T030347Z-C30B56,B,S04,Video B10,Science,4,-1,-1,-2,-3,-1,-3,2,2,-3,-3,-1,1,-1,-3,1,quite_a_lot,early_middle,3
+P-20260711T030347Z-C30B56,B,H01,Video B01,History,5,-3,-3,-3,-3,-3,-1,-3,-3,-1,-2,-1,1,-1,-2,-3,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260711T030347Z-C30B56,B,H03,Video B03,History,6,2,2,2,1,2,2,2,2,2,3,2,-2,-1,1,2,very_much,early_middle,2
+P-20260711T030347Z-C30B56,B,L01,Video B09,Language Learning,7,-3,-3,-3,-3,-3,-1,-3,-3,-1,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,3
+P-20260711T030347Z-C30B56,B,S03,Video B08,Science,8,-3,-3,-3,-3,-3,-2,-3,-3,-1,-3,-3,-3,-2,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260711T030347Z-C30B56,B,L04,Video B06,Language Learning,9,-3,-3,-3,-3,2,-3,-3,-1,-1,-2,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260711T030347Z-C30B56,B,S01,Video B04,Science,10,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260711T030347Z-C30B56,B,L02,Video B06,Language Learning,11,-1,-3,-3,-1,-3,2,-2,-1,2,2,-3,-3,-3,-3,-3,moderately,late_middle,3
+P-20260711T030347Z-C30B56,B,H02,Video B02,History,12,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260712T092333Z-618D74,A,S04,Video A10,Science,1,3,-2,2,3,-3,0,-2,3,-2,-3,3,-1,-2,0,3,very_much,beginning,1
+P-20260712T092333Z-618D74,A,S02,Video A07,Science,2,-1,-3,-3,-3,-3,2,-3,0,-3,-3,-3,-3,-3,-3,-1,slightly,not_bored_or_did_not_want_to_stop,5
+P-20260712T092333Z-618D74,A,H02,Video A02,History,3,2,-1,3,3,2,2,-2,3,-1,2,3,3,3,3,3,very_much,beginning,1
+P-20260712T092333Z-618D74,A,L03,Video A06,Language Learning,4,-1,-3,-3,-3,-3,-1,-3,2,-3,-3,-2,-3,-3,-3,-1,moderately,late_middle,4
+P-20260712T092333Z-618D74,A,S03,Video A08,Science,5,3,3,1,-1,-1,3,3,3,3,3,3,3,3,3,3,very_much,beginning,1
+P-20260712T092333Z-618D74,A,L01,Video A09,Language Learning,6,0,-1,-3,-3,-2,-1,-3,1,-3,-3,0,-2,-2,-3,-2,quite_a_lot,beginning,3
+P-20260712T092333Z-618D74,A,H04,Video A05,History,7,3,3,3,3,3,1,-1,3,1,1,3,2,3,3,2,very_much,beginning,1
+P-20260712T092333Z-618D74,A,L02,Video A06,Language Learning,8,2,3,0,2,2,3,3,3,3,2,0,0,-1,1,3,very_much,beginning,1
+P-20260712T092333Z-618D74,A,H03,Video A03,History,9,-2,-3,-2,-3,-3,-2,-3,0,-2,-2,-2,-2,-3,-2,0,moderately,late_middle,4
+P-20260712T092333Z-618D74,A,L04,Video A06,Language Learning,10,2,2,0,0,1,2,2,3,2,2,-1,0,-1,-1,1,very_much,beginning,1
+P-20260712T092333Z-618D74,A,S01,Video A04,Science,11,2,3,3,0,3,3,3,3,3,3,3,3,2,1,3,very_much,beginning,2
+P-20260712T092333Z-618D74,A,H01,Video A01,History,12,3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,very_much,beginning,1
+P-20260709T074312Z-5E8136,A,S04,Video A10,Science,1,0,-1,0,2,1,-1,-2,-2,-2,-2,-2,-3,-2,-2,0,slightly,ending,4
+P-20260709T074312Z-5E8136,A,L01,Video A09,Language Learning,2,-2,-3,-3,-3,-3,-3,-3,-2,-3,-3,-3,-3,-3,-3,-2,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T074312Z-5E8136,A,S02,Video A07,Science,3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-3,-3,-3,-1,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T074312Z-5E8136,A,H03,Video A03,History,4,-1,-2,-3,0,-1,-1,-3,-2,-2,-2,-1,-3,-3,-3,-1,slightly,late_middle,4
+P-20260709T074312Z-5E8136,A,H02,Video A02,History,5,0,-1,1,1,1,1,-1,2,-1,-1,2,0,0,0,0,moderately,early_middle,2
+P-20260709T074312Z-5E8136,A,H01,Video A01,History,6,1,1,1,1,1,2,-1,-1,2,3,1,0,0,0,0,moderately,beginning,2
+P-20260709T074312Z-5E8136,A,H04,Video A05,History,7,-1,-1,-2,1,-1,-1,-2,-2,-2,0,1,-1,1,-2,0,slightly,late_middle,3
+P-20260709T074312Z-5E8136,A,L02,Video A06,Language Learning,8,-2,-3,-2,-2,-2,-2,-3,-2,-3,-2,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T074312Z-5E8136,A,S01,Video A04,Science,9,3,2,0,1,0,3,3,3,0,2,3,0,0,0,0,very_much,late_middle,1
+P-20260709T074312Z-5E8136,A,L04,Video A06,Language Learning,10,1,-2,0,1,1,-1,-1,-1,-2,0,-1,1,1,-2,-1,slightly,late_middle,3
+P-20260709T074312Z-5E8136,A,L03,Video A06,Language Learning,11,-2,-3,-3,-3,-3,-3,-3,-2,-3,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T074312Z-5E8136,A,S03,Video A08,Science,12,-1,-1,-2,-1,-2,0,-2,-2,-1,0,-1,-2,-1,-2,0,slightly,ending,3
+P-20260709T052634Z-F27519,B,S04,Video B10,Science,1,1,-2,-2,-2,-2,-2,-3,-1,-3,-2,-2,-3,-3,-3,-1,quite_a_lot,early_middle,2
+P-20260709T052634Z-F27519,B,H04,Video B05,History,2,0,2,2,1,3,2,0,-1,1,3,-1,-1,-1,-1,0,quite_a_lot,beginning,1
+P-20260709T052634Z-F27519,B,H01,Video B01,History,3,-3,-1,1,-3,1,-3,-2,-3,-3,-3,-2,-3,-2,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T052634Z-F27519,B,L03,Video B06,Language Learning,4,-2,-3,-1,-2,-3,-2,-3,-1,-3,-3,-3,-3,-3,-3,-1,moderately,early_middle,4
+P-20260709T052634Z-F27519,B,S03,Video B08,Science,5,-2,-3,-3,-3,-3,-1,-3,-2,-3,-2,-2,-2,-2,-2,-3,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260709T052634Z-F27519,B,L04,Video B06,Language Learning,6,-1,-2,-2,-3,-3,-3,-2,-1,-3,-2,-3,-3,-3,-3,-3,quite_a_lot,beginning,2
+P-20260709T052634Z-F27519,B,S02,Video B07,Science,7,-1,-3,-2,-3,-3,-2,-2,-2,-3,-3,-3,-3,-3,-3,-3,slightly,late_middle,4
+P-20260709T052634Z-F27519,B,S01,Video B04,Science,8,-3,-2,-3,-3,-3,-2,-3,-3,-3,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T052634Z-F27519,B,L01,Video B09,Language Learning,9,-2,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-3,-2,-3,slightly,late_middle,3
+P-20260709T052634Z-F27519,B,L02,Video B06,Language Learning,10,-3,-3,-2,-3,-2,-1,-3,-1,-3,-3,-3,-3,-3,-3,-2,slightly,late_middle,3
+P-20260709T052634Z-F27519,B,H03,Video B03,History,11,0,1,0,-1,1,1,-1,-2,0,-1,1,1,1,-1,0,moderately,early_middle,2
+P-20260709T052634Z-F27519,B,H02,Video B02,History,12,-1,-2,-2,-1,-2,0,-3,-3,-1,-2,-1,-2,-1,-3,-1,moderately,late_middle,3
+P-20260709T080130Z-F2AA8F,B,H04,Video B05,History,1,1,2,-3,2,-2,2,-2,3,0,0,-3,-3,-3,-1,3,very_much,early_middle,1
+P-20260709T080130Z-F2AA8F,B,L02,Video B06,Language Learning,2,2,-3,-2,-2,-2,2,-3,-3,0,2,-3,-3,-3,-3,0,not_at_all,ending,4
+P-20260709T080130Z-F2AA8F,B,H03,Video B03,History,3,-1,2,1,2,2,0,2,2,2,3,1,1,1,1,2,quite_a_lot,early_middle,1
+P-20260709T080130Z-F2AA8F,B,H01,Video B01,History,4,2,2,-1,-1,-2,-1,1,-1,-2,-2,2,2,-2,-2,2,moderately,beginning,1
+P-20260709T080130Z-F2AA8F,B,L01,Video B09,Language Learning,5,2,-3,-2,-2,-3,-1,-3,-2,-2,-3,-2,-3,-3,-2,-1,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260709T080130Z-F2AA8F,B,S04,Video B10,Science,6,1,-3,-3,-3,-3,-3,-2,-3,-3,-2,-3,-3,-3,-2,-1,slightly,late_middle,4
+P-20260709T080130Z-F2AA8F,B,L03,Video B06,Language Learning,7,-1,0,-2,-3,-1,-3,-3,-1,-3,-3,1,-3,-2,-3,0,moderately,ending,3
+P-20260709T080130Z-F2AA8F,B,S03,Video B08,Science,8,2,-3,-3,1,-2,-2,-3,-3,-3,0,-2,-3,-2,-3,1,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260709T080130Z-F2AA8F,B,S01,Video B04,Science,9,-2,-2,-2,-2,-2,-3,-3,2,-3,-3,-2,-3,2,-3,0,slightly,early_middle,4
+P-20260709T080130Z-F2AA8F,B,H02,Video B02,History,10,2,-2,1,-2,-2,2,1,-2,2,2,2,-2,1,-2,1,moderately,early_middle,3
+P-20260709T080130Z-F2AA8F,B,L04,Video B06,Language Learning,11,2,-2,-2,-2,-2,2,-2,-2,2,2,-3,-3,-3,-3,2,moderately,late_middle,3
+P-20260709T080130Z-F2AA8F,B,S02,Video B07,Science,12,2,2,-2,-2,-2,-3,-1,3,-3,-3,-3,-3,-3,-3,2,quite_a_lot,beginning,4
+P-20260711T074730Z-D339A3,B,H04,Video B05,History,1,-2,-3,-1,-2,-1,-1,-3,-2,-2,-1,-2,-3,-2,-1,-1,slightly,ending,4
+P-20260711T074730Z-D339A3,B,H02,Video B02,History,2,1,0,1,-1,-1,2,-1,-1,1,1,2,1,-1,-1,1,slightly,late_middle,2
+P-20260711T074730Z-D339A3,B,S03,Video B08,Science,3,-1,-1,-1,-1,-1,-2,-3,2,-3,-3,-2,-2,-2,-2,-2,quite_a_lot,beginning,3
+P-20260711T074730Z-D339A3,B,L01,Video B09,Language Learning,4,1,-1,-1,-1,-1,1,-2,1,-2,-2,-2,-2,-2,-2,-1,quite_a_lot,beginning,3
+P-20260711T074730Z-D339A3,B,S04,Video B10,Science,5,-2,-2,-2,-2,-2,-2,-2,-1,-2,-3,-2,-2,-2,-2,-2,slightly,late_middle,4
+P-20260711T074730Z-D339A3,B,H03,Video B03,History,6,-1,-2,-2,-1,-2,0,-1,-2,-1,-1,1,1,0,1,0,not_at_all,not_bored_or_did_not_want_to_stop,3
+P-20260711T074730Z-D339A3,B,L03,Video B06,Language Learning,7,-1,-3,-3,-3,-3,-1,-2,-1,-1,-2,-2,-2,-2,-2,0,slightly,late_middle,4
+P-20260711T074730Z-D339A3,B,L04,Video B06,Language Learning,8,-1,-3,-3,-2,-3,-2,-2,-2,-1,-2,-3,-3,-3,-3,-2,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260711T074730Z-D339A3,B,L02,Video B06,Language Learning,9,-1,-2,-2,-2,-2,1,-1,2,-1,-1,-1,-1,-1,-1,0,slightly,early_middle,3
+P-20260711T074730Z-D339A3,B,S02,Video B07,Science,10,0,1,-1,-1,-1,-2,-1,1,-1,-1,0,0,-1,-1,1,moderately,early_middle,3
+P-20260711T074730Z-D339A3,B,H01,Video B01,History,11,-2,0,1,-1,-1,-1,-1,-1,-2,-1,0,0,-1,1,1,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260711T074730Z-D339A3,B,S01,Video B04,Science,12,1,0,-1,-1,-1,-2,1,-3,1,1,-3,-3,-3,-1,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,S01,Video A04,Science,1,0,-1,-1,-1,-1,0,-1,0,-2,-1,-1,-1,-1,-1,0,slightly,early_middle,3
+P-20260710T060100Z-36E24D,A,L04,Video A06,Language Learning,2,-2,-2,-2,-2,-2,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,H04,Video A05,History,3,0,0,1,1,0,-1,-1,-1,-1,-1,0,0,0,0,0,slightly,beginning,2
+P-20260710T060100Z-36E24D,A,S02,Video A07,Science,4,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,S04,Video A10,Science,5,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,H02,Video A02,History,6,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,0,-2,0,0,-1,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,L01,Video A09,Language Learning,7,-1,-2,-2,-2,-2,-2,-2,-1,-2,-2,-2,-2,-2,-2,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,H01,Video A01,History,8,-2,-2,-1,-1,-1,-1,-2,-2,-2,-2,-1,-1,-1,-1,-1,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,L02,Video A06,Language Learning,9,-1,-2,-2,-1,-2,-1,-2,-1,-2,-1,-1,-1,-1,-1,-1,slightly,beginning,3
+P-20260710T060100Z-36E24D,A,H03,Video A03,History,10,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T060100Z-36E24D,A,S03,Video A08,Science,11,-1,-1,-1,-1,-1,-1,-1,-1,-2,-1,-1,-1,-1,-1,-1,slightly,beginning,3
+P-20260710T060100Z-36E24D,A,L03,Video A06,Language Learning,12,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260710T094515Z-34FF30,A,H03,Video A03,History,1,2,-2,-2,0,1,1,-1,0,0,0,0,0,-1,-1,0,moderately,beginning,3
+P-20260710T094515Z-34FF30,A,S02,Video A07,Science,2,-1,-1,-1,0,-1,-2,-2,1,0,-1,-1,-1,-1,-1,0,moderately,early_middle,2
+P-20260710T094515Z-34FF30,A,S04,Video A10,Science,3,-3,-1,1,-2,0,2,-1,-3,0,-2,-1,-1,0,-1,-1,slightly,ending,4
+P-20260710T094515Z-34FF30,A,S03,Video A08,Science,4,3,-2,0,3,0,2,-1,3,-1,0,3,0,0,0,0,very_much,beginning,1
+P-20260710T094515Z-34FF30,A,H01,Video A01,History,5,3,0,0,0,0,1,-1,3,1,-1,3,0,0,-2,0,very_much,beginning,1
+P-20260710T094515Z-34FF30,A,H02,Video A02,History,6,3,0,1,0,1,2,-1,3,0,0,3,0,3,0,0,very_much,beginning,1
+P-20260710T094515Z-34FF30,A,L02,Video A06,Language Learning,7,1,-2,-1,0,-2,0,-2,2,-2,0,2,-2,-2,-2,0,quite_a_lot,beginning,3
+P-20260710T094515Z-34FF30,A,L01,Video A09,Language Learning,8,-1,-2,-1,-1,-3,-1,-2,-2,0,-1,-1,-1,0,0,0,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260710T094515Z-34FF30,A,L03,Video A06,Language Learning,9,2,-1,0,0,-2,0,-2,3,-1,0,2,-2,-1,-1,2,very_much,beginning,2
+P-20260710T094515Z-34FF30,A,L04,Video A06,Language Learning,10,-2,-1,0,-1,-1,0,-2,-2,0,0,-1,-1,-1,0,-1,slightly,ending,4
+P-20260710T094515Z-34FF30,A,H04,Video A05,History,11,-3,-3,2,-3,-3,0,-3,-3,1,0,-3,-3,-3,-3,-2,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260710T094515Z-34FF30,A,S01,Video A04,Science,12,2,-2,-1,1,-1,3,0,2,1,0,3,-1,1,0,1,very_much,early_middle,2
+P-20260709T084146Z-D81B07,A,H03,Video A03,History,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,-1,-1,-1,-1,0,slightly,early_middle,3
+P-20260709T084146Z-D81B07,A,H02,Video A02,History,2,1,3,2,1,0,0,3,1,2,2,2,2,2,0,0,not_at_all,not_bored_or_did_not_want_to_stop,1
+P-20260709T084146Z-D81B07,A,S04,Video A10,Science,3,0,2,2,1,0,1,2,2,-1,1,3,3,3,2,2,very_much,beginning,2
+P-20260709T084146Z-D81B07,A,L04,Video A06,Language Learning,4,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260709T084146Z-D81B07,A,S01,Video A04,Science,5,2,-2,-2,-1,-1,2,-1,-1,-2,-2,2,-1,1,0,2,moderately,late_middle,2
+P-20260709T084146Z-D81B07,A,H01,Video A01,History,6,-1,-1,-1,1,-1,1,-1,-1,-1,2,2,2,2,2,2,slightly,beginning,3
+P-20260709T084146Z-D81B07,A,S03,Video A08,Science,7,-1,2,2,2,2,3,3,3,3,3,3,3,3,3,3,quite_a_lot,beginning,2
+P-20260709T084146Z-D81B07,A,H04,Video A05,History,8,1,1,2,1,2,2,1,-1,-1,0,3,1,2,1,1,slightly,beginning,3
+P-20260709T084146Z-D81B07,A,S02,Video A07,Science,9,-3,-3,-3,-3,-3,-2,-3,-3,-3,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T084146Z-D81B07,A,L03,Video A06,Language Learning,10,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
+P-20260709T084146Z-D81B07,A,L02,Video A06,Language Learning,11,-2,-3,-3,-2,-3,-2,-2,-2,-3,-3,-2,-3,-2,-2,-2,not_at_all,not_bored_or_did_not_want_to_stop,4
+P-20260709T084146Z-D81B07,A,L01,Video A09,Language Learning,12,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,not_at_all,not_bored_or_did_not_want_to_stop,5
