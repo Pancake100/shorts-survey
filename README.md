@@ -22,6 +22,3 @@ Participants also provide an **Overall Evaluation** for each video. The collecte
 
 The purpose of this research is to better understand how viewers perceive educational short videos and to identify important factors that contribute to positive viewer impressions. The findings may provide useful guidance for designing and producing more effective educational short-video content.
 
-## Note
-
-This website was developed for academic research purposes. The experiment data are used only for research and analysis.
